@@ -70,8 +70,14 @@ function updatefig(h, s, y_total, t_total, te_total, pos1, rotor, stator, ...
   if mod(im_idx, 2) == 1
 
     % Start and end indices for the contact state change
-    start_idx = find(t_total == te_total(im_idx(end)  ));
-    end_idx   = find(t_total == te_total(im_idx(end)+1));
+    start_idx = find(t_total == te_total(im_idx));
+
+    % Check weather simulation ended during impact
+    if length(te_total) > im_idx
+      end_idx = find(t_total == te_total(im_idx+1));
+    else
+      end_idx = length(t_total);
+    end
 
     % Update plot
     forcein_x = deltas(start_idx:end_idx);

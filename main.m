@@ -78,6 +78,8 @@ toc
 
 fprintf('%i perimeter crossings detected\n', length(te_total))
 
+return
+
 % Write results to file
 fileID = fopen('test.txt','w');
 fprintf(fileID,'%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n',...
