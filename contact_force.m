@@ -17,6 +17,10 @@ function [F_cx, F_cy, delta, delta_d] = contact_force(y, s, cmod, state)
   if s.calc_gap(y) < 0
   % If the "gap" is negative the contact force and indentation is zero, while
   % the initial relative impact velocity should be calculated
+
+    % Check which solver is calling the parent function, this is important since
+    % delta_d_init cannot change, when the event function is only testing the
+    % limit
     if state == 0
       cmod.delta_d_init = s.pen_rate(y);
       delta_d = cmod.delta_d_init;
@@ -48,6 +52,7 @@ function [F_cx, F_cy, delta, delta_d] = contact_force(y, s, cmod, state)
     F_cx = F(1);
     F_cy = F(2);
 
+    % delta_d is overwritten here for debug purposes in 'debug1'
     delta_d = cmod.delta_d_init;
   end
 end

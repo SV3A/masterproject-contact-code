@@ -26,7 +26,7 @@ classdef Rotorsystem < handle
     K_mx = 3.4675*10^4;     % Stiffness of the magnetic bearing in x [N/m]
     K_my = 3.4675*10^4;     % Stiffness of the magnetic bearing in y [N/m]
 
-    l_OIH =   413.7e-3;   % Position vector, pivot point to inner house [m]
+    l_OIH = 413.7e-3;   % Position vector, pivot point to inner house [m]
     l_OMH = 413.7e-3;   % Position vector, pivot point to middle [m]
 
     m_ih = 1.7;     % Inner house mass [kg]

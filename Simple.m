@@ -5,14 +5,14 @@ classdef Simple < Contactmodels
   properties (Constant)
     k = 1e6   % Stator material stiffness
   end
-  
+
   methods
     function obj = Simple()
     % Constructor function.
       obj.name = "Simple";
       obj.print_name
     end
-    
+
     function Fn = calc_fn(obj, d, ~)
     % 'calc_fn' calculates the normal force
       Fn = obj.k*d;

@@ -68,7 +68,7 @@ function [] = animate(t_total,y_total,s_total,te_total,s,F_cxs,F_cys,deltas)
   xlabel('Time [s]')
   ylabel('Force [N]')
   fplt.YLim = [0 max(F_r)];
-  
+
   % Force-indentation plot
   subplot(2,2,4);
   forcein_plt = plot(0,0,'k','LineWidth',1.5); grid on

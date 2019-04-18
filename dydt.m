@@ -32,12 +32,12 @@ function [y_dot] = dydt(~, y, s, cmod, dir)
   e     = s.e;
   m_ih  = s.m_ih;
   m_mh  = s.m_mh;
-  
+
 
   % Calculate contact forces
   [F_cx, F_cy] = contact_force(y, s, cmod, dir);
 
-  
+
 % Don't edit anything after this as it may be overwritten by Maple!
 % * * * * *
   y_dot(1)  = y(2);
