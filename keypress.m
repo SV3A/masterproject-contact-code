@@ -1,14 +1,12 @@
-function keypress(~, event, h, t_total)
-  disp(event.Key);
-  event
+function keypress(~, event, sens_but_handle)
+  % 'keypress' is a function defining shortcut actions
 
-  if strcmp(event.Key, 'shift')
-    if strcmp(event.EventName, 'KeyPress')
-      set(h, 'SliderStep', [20/length(t_total) 20/length(t_total)]);
-
-    elseif strcmp(event.EventName, 'KeyRelease')
-      set(h, 'SliderStep', [1/length(t_total) 1/length(t_total)]);
-
+  % Make the 'f' key toggle the sensitivity button
+  if strcmp(event.Key, 'f')
+    if sens_but_handle.Value == 1
+      set(sens_but_handle, 'Value', 0)
+    else
+      set(sens_but_handle, 'Value', 1)
     end
   end
 end
