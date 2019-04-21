@@ -31,8 +31,14 @@ classdef Nikravesh < Contactmodels
       obj.n = 3/2;
       obj.ce = 0.5;
       obj.mu_k = 0.2;
-      obj.K = (4/( 3*(((1-obj.nu_r^2)/obj.E_r) + ((1-obj.nu_s^2)/obj.E_s))))*...
-              (r_r*r_s / (r_s - r_r))^(1/2);
+      %obj.K = (4/( 3*(((1-obj.nu_r^2)/obj.E_r) + ((1-obj.nu_s^2)/obj.E_s))))*...
+      %(r_r*r_s / (r_s - r_r))^(0.5);
+
+      % Material parameters
+      h_r = (1 - obj.nu_r^2)/(pi*obj.E_r);
+      h_s = (1 - obj.nu_s^2)/(pi*obj.E_s);
+
+      obj.K = ( 4/(3*pi*(h_r + h_s)) ) * ((r_r*r_s)/(r_r+r_s))^(0.5);
       obj.delta_d_init = 0;
     end
 
@@ -41,9 +47,8 @@ classdef Nikravesh < Contactmodels
     % INPUT:
     %   d       : penetration
     %   d_dot   : relative velocity between rotor and stator
-    %   d_dotmit: initial impact velocity
 
-      Fn = obj.K * d^obj.n * (1 + (3*(1-obj.ce^2)/4)*d_dot/obj.delta_d_init);
+      Fn = obj.K * d^obj.n * ( 1 + (3*(1-obj.ce^2)/4)*d_dot/obj.delta_d_init );
 
     end
   end

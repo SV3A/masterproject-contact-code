@@ -11,7 +11,7 @@ close all
 format long
 
 % Initiate system class with parameters 'xi', 'm0' and 'e'
-s = Rotorsystem(0.006, 30e-3, 10e-3);
+s = Rotorsystem(0.000, 30e-3, 10e-3);
 
 % Define the contact model
 cmod = Nikravesh(s.r_s, s.r_r);
