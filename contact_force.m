@@ -2,16 +2,14 @@ function [F_cx, F_cy, delta, delta_d] = contact_force(y, s, cmod, state)
 % 'contact_force' computes the contact force and related parameters.
 %
 % INPUT:
-%   y   : State vector, the substitution is given as:
-%         y = [gamma, gamma_d, beta, beta_d, theta, theta_d,
-%              x_ih, x_ih_d, y_ih, y_ih_d, x_mh, x_mh_d, y_mh, y_mh_d]^T
-%     s   : Rotor system object
-%     cmod: The contact model object
-%    state: Direction, "1" means outgoing while "-1" is ingoing
+%   y     : State vector
+%   s     : Rotor system object
+%   cmod  : The contact model object
+%   state : Contact indicator (0|1)
 % OUTPUT:
-%     F_c*: Force component
-%    delta: Indentation
-%  delta_d: Indentation rate
+%   F_c*    : Force components
+%   delta   : Indentation
+%   delta_d : Indentation rate
 %
 
   if s.calc_gap(y) < 0
@@ -19,7 +17,7 @@ function [F_cx, F_cy, delta, delta_d] = contact_force(y, s, cmod, state)
   % the initial relative impact velocity should be calculated
 
     % Check which solver is calling the parent function, this is important since
-    % delta_d_init cannot change, when the event function is only testing the
+    % delta_d_init cannot change, when the event function is only "testing" the
     % limit
     if state == 0
       cmod.delta_d_init = s.pen_rate(y);
