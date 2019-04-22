@@ -3,10 +3,10 @@ function toggleSldSens(but_value, sld_handle, t_total)
 % step.
 
   if but_value == 1
-    set(sld_handle, 'SliderStep', [1/length(t_total) 20/length(t_total)]);
+    set(sld_handle, 'SliderStep', [1/length(t_total) 30/length(t_total)]);
     uicontrol(sld_handle)
   else
-    set(sld_handle, 'SliderStep', [25/length(t_total) 25/length(t_total)]);
+    set(sld_handle, 'SliderStep', [30/length(t_total) 30/length(t_total)]);
     uicontrol(sld_handle)
   end
 end

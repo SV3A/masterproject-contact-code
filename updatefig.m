@@ -2,7 +2,7 @@ function updatefig(h, s, y_total, t_total, te_total, pos1, rotor, stator, ...
                    rotor_cross, stator_cross, rev_mark, force_plt, ...
                    forcein_plt,  fplt, F_r, v_vector,  v_rel_r, ...
                    F_cxs, F_cys, deltas, delta_ds, delta_d_ini, ...
-                   s_total, info_field)
+                   s_total, info_field, imp_field)
 % 'updatefig' is used by debug1 to update the debug plot
 
   % Get plot index from slider
@@ -63,7 +63,7 @@ function updatefig(h, s, y_total, t_total, te_total, pos1, rotor, stator, ...
                'UData',vector( :, 3 ), 'VData', vector( :, 4))
 
   % Force-indentation plots
-  % Find how many impact events that have occured so far
+  % Find number of impact events that have occured so far
   im_idx = length(find(te_total <= t_total(i)));
 
   % If the number above is uneven we're currently in contact
@@ -83,6 +83,8 @@ function updatefig(h, s, y_total, t_total, te_total, pos1, rotor, stator, ...
     forcein_x = deltas(start_idx:end_idx);
     forcein_y = F_r(start_idx:end_idx);
     set(forcein_plt, 'XData', forcein_x, 'YData', forcein_y)
+    set(imp_field, 'string', ...
+      [num2str(floor(im_idx/2)+1), '/', num2str(ceil(length(te_total)/2))])
   end
 
   drawnow
