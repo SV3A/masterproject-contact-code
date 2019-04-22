@@ -52,7 +52,7 @@ while t_total(end) ~= tspan(2)
 
   gap = s.calc_gap(y_0);
 
-  if gap < 0
+  if gap <= 0
     contact_state = 0;
     [t,y,te,ye,ie] =  ode45(@(t,y) dydt(t,y,s,cmod,contact_state), ...
                       [loc_tst,tspan(2)], y_0, options_ode45);
