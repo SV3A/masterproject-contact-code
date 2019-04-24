@@ -122,8 +122,7 @@ classdef Rotorsystem < handle
       r_OR = obj.rot_centrepos(y);
 
       % Calculate the effective clearance (or penetration)
-      gap = sqrt( (r_OR(1)-y(7)-y(11)-obj.x0)^2 + ...
-                  (r_OR(2)-y(9)-y(13)-obj.y0)^2 ) - obj.cl;
+      gap = sqrt( (r_OR(1)-y(7))^2 + (r_OR(2)-y(9))^2 ) - obj.cl;
     end
 
     function alpha = contact_ang(obj, y)
@@ -134,8 +133,7 @@ classdef Rotorsystem < handle
       % Get rotor centre position
       r_OR = obj.rot_centrepos(y);
 
-      alpha = atan2((r_OR(2)-y(9)-y(13) - obj.y0), ...
-                    (r_OR(1)-y(7)-y(11) - obj.x0));
+      alpha = atan2(r_OR(2)-y(9), r_OR(1)-y(7));
     end
 
     function v_rc = rotor_linvel(obj, y)

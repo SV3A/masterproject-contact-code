@@ -78,43 +78,43 @@ toc
 
 fprintf('%i perimeter crossings detected\n', length(te_total))
 
-return
 
-% Write results to file
-fileID = fopen('test.txt','w');
-fprintf(fileID,'%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n',...
-  [t_total, y_total]');
-fclose(fileID);
+%% Write results to file
+%fileID = fopen('test.txt','w');
+%fprintf(fileID,'%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n',...
+  %[t_total, y_total]');
+%fclose(fileID);
 
-% Get contact forces
+
+% Get rotor centre in the contact plane and contact forces
+pos1     = zeros( 3, length(t_total) );
+alphas   = zeros( length(t_total), 1 );
+v_rel_r  = zeros( 3, length(t_total) );
+F_cxs    = zeros( length(t_total), 1 );
+F_cys    = zeros( length(t_total), 1 );
+deltas   = zeros( length(t_total), 1 );
+delta_ds = zeros( length(t_total), 1 );
+delta_d_ini = zeros( length(t_total), 1 );
+
 for i = 1:length(t_total)
   y_i = y_total(i,:)';
 
-  if s_total(i) == 0, state = 0; else, state = 1;  end
-
-  [F_cxs(i), F_cys(i), deltas(i) ] = contact_force(y_i, s, cmod, state);
-end
-
-return
-%animate(t_total,y_total,s_total,te_total,s,F_cxs,F_cys,deltas)
-
-% Get rotor centre in the contact plane
-pos1 = zeros(3, length(t_total));
-for i = 1:length(t_total)
   T_gamma = s.T_gam(y_total(i,1));
   T_beta  = s.T_bet(y_total(i,3));
-  T_theta = s.T_the(y_total(i,5));
-  pos1(:,i) = T_gamma.' * (T_beta.'* [0;0;s.l_OC] );
+  pos1(:,i) = T_gamma' * (T_beta'*[0; 0; s.l_OC]);
+
+  if s_total(i) == 0, state = 0; else, state = 1;  end
+
+  [F_cxs(i), F_cys(i), deltas(i), delta_d_ini(i)] = ...
+    contact_force(y_i, s, cmod, state);
+
+  alphas(i) = s.contact_ang(y_i);
+  deltas(i) = s.calc_gap(y_i);
+  [delta_ds(i), v_rel_r(:,i)] = s.pen_rate(y_i);
 end
 
 
 % Plots %
-
-% Force-identation plot
-%figure(); hold on
-%plot(deltas, sqrt(F_cxs.^2+F_cys.^2), 'k'); grid on; hold on
-%xlabel('Indentation [m]')
-%ylabel('Contact force [N]')
 
 % Orbit plot
 figure('units','normalized','outerposition',[0.5 0 0.6 1])
@@ -148,24 +148,12 @@ for i = 1:2:size(y_total,2)
   j = j + 1;
 end
 
-figure()
-subplot(2,1,1)
-plot(t_total, sign(delta_ds))
-subplot(2,1,2)
-plot(t_total, s_total)
-
-figure()
-plot(t_total, sign(delta_ds)); hold on
-plot(t_total, s_total)
-
-return
 
 % Force plot
 figure('units','normalized','outerposition',[0.5 0 0.6 1])
 subplot(5,1,1)
 plot(t_total, sqrt(F_cxs.^2 + F_cys.^2)); grid on
-xlabel('Time [s]')
-ylabel('Resulting force [N]')
+xlabel('Time [s]'); ylabel('Resulting force [N]')
 
 posi = get(gca, 'Position');
 posi(1) = 0.055;
@@ -184,33 +172,4 @@ for i = 7:2:size(y_total,2)
 
   j = j + 1;
 end
-
-
-return
-
-% FFT %
-% Length of signal (round up to nearest thousand)
-L = 1000*(ceil(length(t_total)/1000));
-
-% Equidistant time and data
-ts = linspace(tspan(1), tspan(2), L);
-timesig = interp1(t_total, pos1(2,:), ts);
-
-% Sampling frequency
-Fs = L/(tspan(2)-tspan(1));
-
-% Frequency vector
-f = Fs*(0:(L/2))/L;
-
-Y = fft(timesig);
-P2 = abs(Y/L);
-P1 = P2(1:L/2+1);
-P1(2:end-1) = 2*P1(2:end-1);
-
-figure()
-plot(f, P1); grid on
-title('Single-Sided Amplitude Spectrum')
-xlabel('f (Hz)')
-ylabel('|P1(f)|')
-xlim([0 50])
 
