@@ -34,7 +34,7 @@ y_0(13)   = -3.626e-6;
 y_0(6)    = Omega;
 
 % Solver options
-options_ode45 = odeset('RelTol', 1e-7, 'AbsTol', 1e-7, ...
+options_ode45 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, 'MaxStep', 1e-3,...
                        'Events', @(t,y) impact_detect(t, y, s, 1));
 options_ode15 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, ...
                        'Events', @(t,y) impact_detect(t, y, s, -1));
@@ -77,6 +77,8 @@ end
 toc
 
 fprintf('%i perimeter crossings detected\n', length(te_total))
+
+return
 
 
 %% Write results to file

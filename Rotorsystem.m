@@ -144,7 +144,7 @@ classdef Rotorsystem < handle
 
       % Absolute angular velocity of the reference frame B2
       Omega_B2 = obj.T_bet(y(3)) * obj.T_gam(y(1)) * [y(2); 0; 0] + ...
-                 obj.T_bet(y(3)) * [0; y(3); 0];
+                 obj.T_bet(y(3)) * [0; y(4); 0];
 
       % Absolute linear velocity of the rotor centre in the contact plane
       v_rc = obj.T_gam(y(1))' * (obj.T_bet(y(3))' * ...
