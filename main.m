@@ -35,9 +35,9 @@ y_0(6)    = Omega;
 
 % Solver options
 options_ode45 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, 'MaxStep', 1e-3,...
-                       'Events', @(t,y) impact_detect(t, y, s, 1));
+                       'Events', @(t,y) impactDetect(t, y, s, 1));
 options_ode15 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, ...
-                       'Events', @(t,y) impact_detect(t, y, s, -1));
+                       'Events', @(t,y) impactDetect(t, y, s, -1));
 
 % Solution containers
 t_total  = 0;   % time

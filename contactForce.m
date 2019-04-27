@@ -1,5 +1,5 @@
-function [F_cx, F_cy, delta, delta_d] = contact_force(y, s, cmod, state)
-% 'contact_force' computes the contact force and related parameters.
+function [F_cx, F_cy, delta, delta_d] = contactForce(y, s, cmod, state)
+% 'contactForce' computes the contact force and related parameters.
 %
 % INPUT:
 %   y     : State vector

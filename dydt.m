@@ -1,11 +1,11 @@
-function [y_dot] = dydt(~, y, s, cmod, dir)
+function y_dot = dydt(~, y, s, cmod, state)
 % 'dydt' serves the equation of motion as a system of six first order equations.
-% INPUTS:
-%   t: Time
-%   y: State vector, the substitution is given as:
-%      y = [gamma, gamma_d, beta, beta_d, theta, theta_d, x_ih, x_ih_d, y_ih,...
-%           y_ih_d, x_mh, x_mh_d, y_mh, y_mh_d]^T
-%   s: Rotor system object
+%
+% INPUT:
+%   y     : State vector
+%   s     : Rotor system object
+%   cmod  : The contact model object
+%   state : Contact indicator (0|1)
 % OUTPUT:
 %   y_dot: Accelerations and velocities
 %
@@ -35,7 +35,7 @@ function [y_dot] = dydt(~, y, s, cmod, dir)
 
 
   % Calculate contact forces
-  [F_cx, F_cy] = contact_force(y, s, cmod, dir);
+  [F_cx, F_cy] = contactForce(y, s, cmod, state);
 
 
 % Don't edit anything after this as it may be overwritten by Maple!

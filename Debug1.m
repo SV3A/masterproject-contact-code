@@ -98,7 +98,7 @@ classdef Debug1 < handle
         if obj.s_total(i) == 0, state = 0; else, state = 1;  end
 
         [obj.F_cxs(i), obj.F_cys(i), ~, obj.delta_d_ini(i)] = ...
-          contact_force(y_i, obj.s, obj.cmod, state);
+          contactForce(y_i, obj.s, obj.cmod, state);
 
         obj.alphas(i) = obj.s.contact_ang(y_i);
         obj.deltas(i) = obj.s.calc_gap(y_i);
