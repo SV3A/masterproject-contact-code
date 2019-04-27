@@ -1,7 +1,7 @@
 classdef Debug1 < handle
   % 'Debug1' is a class used to create a visual debugging tool.
 
-  properties
+  properties (Access = private)
     % Solution data
     t_total
     y_total
@@ -38,6 +38,10 @@ classdef Debug1 < handle
     sens_button
     fwd_button
     bwd_button
+
+    % Slider steps
+    sld_step
+    sld_finestep
   end % properties
 
   methods (Access = public)
@@ -57,6 +61,10 @@ classdef Debug1 < handle
       obj.s_total  = s_total;
       obj.s        = s;
       obj.cmod     = cmod;
+
+      % Set slider step
+      obj.sld_step = 30/length(obj.t_total);
+      obj.sld_finestep = 1/length(obj.t_total);
 
       obj.setupSol();
       obj.setupPlots();
@@ -184,7 +192,7 @@ classdef Debug1 < handle
         'units','normalized',...
         'position',[0.01 0.04 0.4 0.01],...
         'min',1,'max',length(obj.t_total),'val',1,...
-        'SliderStep', [30/length(obj.t_total) 30/length(obj.t_total)]);
+        'SliderStep', [obj.sld_step obj.sld_step]);
 
       % Create eventlistener for a change of slider value
       addlistener(obj.sld_handle,'Value','PostSet', @(~,~) obj.updatefig());
@@ -204,8 +212,8 @@ classdef Debug1 < handle
         'units', 'normalized', ...
         'position',[0.06 0.10 0.04 0.0375]);
 
-      obj.bwd_button = uicontrol('style', 'pushbutton', 'string', 'Previous', ...
-        'fontsize', 12, ...
+      obj.bwd_button = uicontrol('style', 'pushbutton', ...
+        'string', 'Previous', 'fontsize', 12, ...
         'units', 'normalized', ...
         'position',[0.015 0.10 0.04 0.0375]);
 
@@ -343,11 +351,9 @@ classdef Debug1 < handle
       % the slider step.
 
       if obj.sens_button.Value == 1
-        set(obj.sld_handle, 'SliderStep', ...
-          [1/length(obj.t_total) 30/length(obj.t_total)]);
+        set(obj.sld_handle, 'SliderStep', [obj.sld_finestep obj.sld_step]);
       else
-        set(obj.sld_handle, 'SliderStep', ...
-          [30/length(obj.t_total) 30/length(obj.t_total)]);
+        set(obj.sld_handle, 'SliderStep', [obj.sld_step obj.sld_step]);
       end
 
       % Focus slider
