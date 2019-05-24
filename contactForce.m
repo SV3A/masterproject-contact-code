@@ -42,10 +42,11 @@ function [F_cx, F_cy, delta, delta_d] = contactForce(y, s, cmod, state)
     % Normal force
     Fn = cmod.calc_fn(delta, delta_d);
 
+    % Friction force
+    Ff = cmod.calc_ff(Fn, s.tan_rel_velocity(y));
+
     % Contact forces in the inertial coordinate system
-    F = Fn*[cos(alpha) - cmod.mu_k*sin(alpha)*sign(y(6));
-            sin(alpha) + cmod.mu_k*cos(alpha)*sign(y(6));
-            0];
+    F = Fn * [cos(alpha); sin(alpha); 0] + Ff * [-sin(alpha); cos(alpha); 0];
 
     F_cx = F(1);
     F_cy = F(2);

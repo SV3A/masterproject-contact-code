@@ -151,22 +151,42 @@ classdef Rotorsystem < handle
              cross( Omega_B2, [0; 0; obj.l_OC] ));
     end
 
+    function v_rel = abs_rel_velocity(obj, y)
+    % 'rel_velocity' calculates the relative velocity between the rotor and
+    % the stator in the inertial coordinate system.
+    % INPUT:
+    %   y: State vector.
+
+      v_rel = obj.rotor_linvel(y) - [y(7); y(9); 0];
+    end
+
+    function vt_rel = tan_rel_velocity(obj, y)
+    % 'tan_rel_velocity' calculates the tangential compoent of the relative
+    % velocity between the rotor and stator.
+    % INPUT:
+    %   y: State vector.
+
+      v_rel = obj.abs_rel_velocity(y);
+
+      % Get contact angle between rotor and inner house
+      alpha = obj.contact_ang(y);
+
+      vt_rel = obj.r_r*y(6) - v_rel(1)*sin(alpha) + v_rel(2)*cos(alpha);
+    end
+
     function [delta_d, v_rel_r] = pen_rate(obj, y)
-    % 'pen_rate(y)' calculates the penetration rate.
+    % 'pen_rate' calculates the penetration rate.
     % INPUT:
     %   y: State vector.
 
       % Get contact angle between rotor and inner house
       alpha = obj.contact_ang(y);
 
-      % Absolute linear velocity of the rotor centre in I
-      v_rc = obj.rotor_linvel(y);
-
-      % Relative velocity between the rotor and the inner house (stator)
-      v_rel = v_rc - [y(7); y(9); 0];
-
       % Unit vector in the radial direction
       e_r = [cos(alpha); sin(alpha); 0];
+
+      % Relative velocity between the rotor and the inner house (stator)
+      v_rel = obj.abs_rel_velocity(y);
 
       % Projection onto the radial direction
       v_rel_r = dot(v_rel, e_r)*e_r;

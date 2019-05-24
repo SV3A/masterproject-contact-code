@@ -7,10 +7,10 @@ classdef Nikravesh < Contactmodels
 %   By: Lankarani, H. M. and Nikravesh, P. E.
 
   properties (Constant)
-    E_r = 70e9;  % Young's modulus sphere (rotor material part) [Pa]
-    E_s = 100e9; % Young's modulus sphere (stator material part) [Pa]
-    nu_r = 0.35; % Poisson's ratio for the rotor material [-]
-    nu_s = 0.35; % Poisson's ratio for the stator material [-]
+    E_r  = 70e9;   % Young's modulus sphere (rotor material part) [Pa]
+    E_s  = 100e9;  % Young's modulus sphere (stator material part) [Pa]
+    nu_r = 0.35;   % Poisson's ratio for the rotor material [-]
+    nu_s = 0.35;   % Poisson's ratio for the stator material [-]
   end
 
   properties
@@ -21,16 +21,19 @@ classdef Nikravesh < Contactmodels
   end
 
   methods
-    function obj = Nikravesh(r_s, r_r)
+    function obj = Nikravesh(friction_model, r_s, r_r)
     % Constructor function.
     % INPUT:
     %   r_s: stator inner radius
     %   r_r: rotor radius
+
+      % Send friction model to super class constructor
+      obj = obj@Contactmodels(friction_model);
+
       obj.name = "Nikravesh";
       obj.print_name;
       obj.n = 3/2;
       obj.ce = 0.5;
-      obj.mu_k = 0.2;
       %obj.K = (4/( 3*(((1-obj.nu_r^2)/obj.E_r) + ((1-obj.nu_s^2)/obj.E_s))))*...
       %(r_r*r_s / (r_s - r_r))^(0.5);
 

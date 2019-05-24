@@ -14,7 +14,7 @@ format long
 s = Rotorsystem(0.000, 30e-3, 10e-3);
 
 % Define the contact model
-cmod = Nikravesh(s.r_s, s.r_r);
+cmod = Nikravesh('ambrosio', s.r_s, s.r_r);
 
 % Motor angular velocity [Hz]
 Omega = 18.9*2*pi;
@@ -78,7 +78,6 @@ toc
 
 fprintf('%i perimeter crossings detected\n', length(te_total))
 
-return
 
 
 %% Write results to file
@@ -108,7 +107,7 @@ for i = 1:length(t_total)
   if s_total(i) == 0, state = 0; else, state = 1;  end
 
   [F_cxs(i), F_cys(i), deltas(i), delta_d_ini(i)] = ...
-    contact_force(y_i, s, cmod, state);
+    contactForce(y_i, s, cmod, state);
 
   alphas(i) = s.contact_ang(y_i);
   deltas(i) = s.calc_gap(y_i);
