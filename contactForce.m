@@ -12,8 +12,8 @@ function [F_cx, F_cy, delta, delta_d] = contactForce(y, s, cmod, state)
 %   delta_d : Indentation rate
 %
 
-  if s.calc_gap(y) <= 0
-  % If the "gap" is negative the contact force and indentation is zero, while
+  if s.calc_indent(y) <= 0
+  % If the "indent" is negative the contact force and indentation is zero, while
   % the initial relative impact velocity should be calculated
 
     % Check which solver is calling the parent function, this is important since
@@ -31,7 +31,7 @@ function [F_cx, F_cy, delta, delta_d] = contactForce(y, s, cmod, state)
 
   else
     % Penetration
-    delta = s.calc_gap(y);
+    delta = s.calc_indent(y);
 
     % Penetration rate
     delta_d = s.pen_rate(y);

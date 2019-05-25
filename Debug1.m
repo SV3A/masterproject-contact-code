@@ -101,7 +101,7 @@ classdef Debug1 < handle
           contactForce(y_i, obj.s, obj.cmod, state);
 
         obj.alphas(i) = obj.s.contact_ang(y_i);
-        obj.deltas(i) = obj.s.calc_gap(y_i);
+        obj.deltas(i) = obj.s.calc_indent(y_i);
         [ obj.delta_ds(i), obj.v_rel_r(:,i) ] = obj.s.pen_rate(y_i);
       end
 

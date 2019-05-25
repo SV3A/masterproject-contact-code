@@ -105,24 +105,25 @@ classdef Rotorsystem < handle
       r_OR = obj.T_gam(y(1))' * (obj.T_bet(y(3))' * [0; 0; obj.l_OC]);
     end
 
-    function gap = calc_gap(obj, y)
-    % 'calc_gap(y)' calculates the size of the gap between the rotor and stator.
+    function indent = calc_indent(obj, y)
+    % 'calc_indent(y)' calculates the size of the indent between the rotor and
+    % stator.
     %
     % INPUT:
     %   y: State vector.
     %
     % OUTPUT:
-    %   gap: The size of the 'gap', where the gap is represented as the rotor
-    %   centre position minus the clearance, thus the output is negative when
-    %   the rotor is not in contact with the stator, and positive otherwise,
-    %   during which the output signifies the penetration of the rotor into the
-    %   stator material.
+    %   indent: The size of the 'indent', where the indent is represented as
+    %   the rotor centre position minus the clearance, thus the output is
+    %   negative when the rotor is not in contact with the stator, and positive
+    %   otherwise, during which the output signifies the penetration of the
+    %   rotor into the stator material.
     %
       % Get rotor centre position
       r_OR = obj.rot_centrepos(y);
 
       % Calculate the effective clearance (or penetration)
-      gap = sqrt( (r_OR(1)-y(7))^2 + (r_OR(2)-y(9))^2 ) - obj.cl;
+      indent = sqrt( (r_OR(1)-y(7))^2 + (r_OR(2)-y(9))^2 ) - obj.cl;
     end
 
     function alpha = contact_ang(obj, y)

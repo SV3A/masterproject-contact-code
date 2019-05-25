@@ -50,9 +50,9 @@ loc_tst = tspan(1); % Integration time starting point
 tic
 while t_total(end) ~= tspan(2)
 
-  gap = s.calc_gap(y_0);
+  indent = s.calc_indent(y_0);
 
-  if gap <= 0
+  if indent <= 0
     contact_state = 0;
     [t,y,te,ye,ie] =  ode45(@(t,y) dydt(t,y,s,cmod,contact_state), ...
                       [loc_tst,tspan(2)], y_0, options_ode45);
@@ -110,7 +110,7 @@ for i = 1:length(t_total)
     contactForce(y_i, s, cmod, state);
 
   alphas(i) = s.contact_ang(y_i);
-  deltas(i) = s.calc_gap(y_i);
+  deltas(i) = s.calc_indent(y_i);
   [delta_ds(i), v_rel_r(:,i)] = s.pen_rate(y_i);
 end
 
