@@ -5,6 +5,7 @@ classdef Plottools < handle
     dbugplots = {};  % Cell array containing debug-plot objects
 
     orbit_plt % Orbit plot figure handle
+    state_plt % State plot figure handle
   end
 
 
@@ -53,6 +54,35 @@ classdef Plottools < handle
            clearance * sin(linspace(0, 2*pi)) * 1e3, 'r')
       xlabel('Orbit [mm]')
       axis equal
+    end
+
+
+    function states(obj, t, state_vector)
+      % Plots the state vector.
+      % Input:
+      %   state_vector: A matrix of dimension 'n x number_of_states'
+
+      % Create figure or overwrite it
+      obj.state_plt = obj.set_fig(obj.state_plt);
+
+      % Set figure properties
+      set(obj.state_plt, 'name', 'State Plot', ...
+          'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
+
+      j = 1;
+      for i = 1:size(state_vector, 2)
+        % Create subplot and plot
+        subplot(size(state_vector,2), 1, j)
+        plot(t, state_vector(:, i));
+
+        % Maximize plots
+        posi    = get(gca, 'Position');
+        posi(1) = 0.055;
+        posi(3) = 0.9;
+        set(gca, 'Position', posi)
+
+        j = j+1;
+      end
     end
 
   end % public methods
