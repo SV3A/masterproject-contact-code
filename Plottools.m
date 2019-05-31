@@ -127,7 +127,7 @@ classdef Plottools < handle
 
     function fig_obj = set_fig(fig_handle)
       % Creates a figure or focusses it and thereby overwrites it
-      if isempty(fig_handle)
+      if isempty(fig_handle) || ~isvalid(fig_handle)
         fig_obj = figure();
       else
         set(0, 'CurrentFigure', fig_handle)
