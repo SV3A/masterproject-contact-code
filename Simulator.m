@@ -22,6 +22,7 @@ classdef Simulator < handle
     m0        % Unbalance mass
     e         % Eccentricity
     fric_mod  % Friction model
+    clearance % Static clearance between the rotor and stator
 
     % Derived parameters
 
@@ -144,6 +145,8 @@ classdef Simulator < handle
       obj.s_OC = [obj.solution(:, 7)';
                   obj.solution(:, 9)';
                   zeros(1, size(obj.solution, 1))];
+
+      obj.clearance = obj.s.cl;
     end
 
 

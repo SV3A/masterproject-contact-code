@@ -3,6 +3,8 @@ classdef Plottools < handle
 
   properties (Access = private)
     dbugplots = {};  % Cell array containing debug-plot objects
+
+    orbit_plt % Orbit plot figure handle
   end
 
 
@@ -30,6 +32,27 @@ classdef Plottools < handle
       else
         error('Too many arguments given')
       end
+    end
+
+
+    function orbit(obj, rot_x, rot_y, clearance)
+      % plots the rotor orbit inside the stator boundary (clearance circle).
+
+      % Create figure or overwrite it
+      obj.orbit_plt = obj.set_fig(obj.orbit_plt);
+
+      % Set figure properties
+      set(obj.orbit_plt, 'name', 'Orbit Plot', ...
+          'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
+
+      % Rotor orbit (converted to [mm])
+      plot(rot_x * 1e3, rot_y * 1e3, 'b'); grid on; hold on
+
+      % Clearance circle
+      plot(clearance * cos(linspace(0, 2*pi)) * 1e3, ...
+           clearance * sin(linspace(0, 2*pi)) * 1e3, 'r')
+      xlabel('Orbit [mm]')
+      axis equal
     end
 
   end % public methods
@@ -61,6 +84,7 @@ classdef Plottools < handle
       obj.debugplt1_internal(t, rot_x, rot_y, sta_x, sta_y, theta, fn, d)
     end
 
+
     function debugplt1_internal(obj, t, rot_x, rot_y, sta_x, sta_y, theta, ...
                                 fn, d)
       % 'debugplt1_internal' creates a debug plot.
@@ -72,4 +96,21 @@ classdef Plottools < handle
     end
 
   end % private methods
+
+
+  methods (Static, Access = private)
+
+    function fig_obj = set_fig(fig_handle)
+      % creates a figure or focusses it and thereby overwrites it
+      if isempty(fig_handle)
+        fig_obj = figure();
+      else
+        set(0, 'CurrentFigure', fig_handle)
+        clf
+        fig_obj = fig_handle;
+      end
+
+    end
+
+  end % static/private methods
 end % class
