@@ -38,43 +38,73 @@ classdef Plottools < handle
       obj.orbit_plt = obj.set_fig(obj.orbit_plt);
 
       % Set figure properties
-      set(obj.orbit_plt, 'name', 'Orbit Plot', ...
+      set(obj.orbit_plt, 'name', 'Orbit Plot', 'color', 'w', ...
           'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
 
       % Rotor orbit (converted to [mm])
-      plot(rot_x * 1e3, rot_y * 1e3, 'b'); grid on; hold on
+      plot(rot_x * 1e3, rot_y * 1e3, 'b', 'LineWidth', 1.2); grid on; hold on
 
       % Clearance circle
       plot(clearance * cos(linspace(0, 2*pi)) * 1e3, ...
-           clearance * sin(linspace(0, 2*pi)) * 1e3, 'r')
+           clearance * sin(linspace(0, 2*pi)) * 1e3, 'r', 'LineWidth', 1.5)
       xlabel('Orbit [mm]')
       axis equal
     end
 
 
-    function states(obj, t, state_vector)
+    function states(obj, t, state_vector, y_labels)
       % Plots the state vector.
       % INPUT:
+      %   t           : Time vector
       %   state_vector: A matrix of dimension 'n x number_of_states'
+      % OPTIONAL:
+      %   y_labels    : Cell array containing y-axis labels
 
       % Create figure or overwrite it
       obj.state_plt = obj.set_fig(obj.state_plt);
 
       % Set figure properties
-      set(obj.state_plt, 'name', 'State Plot', ...
+      set(obj.state_plt, 'name', 'State Plot', 'color', 'w', ...
           'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
 
-      j = 1;
-      for i = 1:size(state_vector, 2)
-        % Create subplot and plot
-        subplot(size(state_vector,2), 1, j)
-        plot(t, state_vector(:, i));
+      % Number of subplots
+      plt_num = size(state_vector, 2);
 
-        % Maximize plots
-        posi    = get(gca, 'Position');
-        posi(1) = 0.055;
-        posi(3) = 0.9;
-        set(gca, 'Position', posi)
+      % Figure heights and top placement point
+      height = round(1/plt_num, 3);
+      old_top = 1-height;
+
+      % Matrix containing color order
+      colors = get(gca, 'ColorOrder');
+
+      j = 1;
+      for i = 1:plt_num
+        % Create subplot and plot
+        subplot(plt_num, 1, j)
+        plot(t, state_vector(:, i), 'color', colors(i, :), 'LineWidth', 1.5);
+        grid on
+
+        % Apply y-labels if given
+        if exist('y_labels', 'var')
+          ylabel(['$' y_labels{i} '$'], 'interpreter', 'latex', 'FontSize', 18)
+        end
+
+        % Remove xticks for all except the last subplot
+        if i < plt_num
+          xticklabels([]);
+        end
+
+        % Maximize plots (in a very hacky way...)
+        p    = get(gca, 'Position');
+        p(1) = 0.06; % Distance from the left border
+        p(3) = 0.92; % Distance from the right border
+        set(gca, 'Position', p);
+
+        op      = get(gca, 'OuterPosition');
+        op(2)   = old_top+i*0.009; % Top placement
+        op(4)   = 0.95/plt_num;    % Height of plot
+        old_top = old_top - height;
+        set(gca, 'OuterPosition', op);
 
         j = j+1;
       end
