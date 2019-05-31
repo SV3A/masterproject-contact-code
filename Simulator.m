@@ -13,23 +13,30 @@ classdef Simulator < handle
 
     % Model objects
 
-    s        % Rotor-stator system
-    cmod     % Contact model
+    s         % Rotor-stator system
+    cmod      % Contact model
 
     % Model properties
 
-    xi       % Damping ratio [-]
-    m0       % Unbalance mass
-    e        % Eccentricity
-    fric_mod % Friction model
+    xi        % Damping ratio [-]
+    m0        % Unbalance mass
+    e         % Eccentricity
+    fric_mod  % Friction model
 
     % Derived parameters
 
-    r_OC     % Position vector of the rotor centre in the contact plane in I
-    s_OC     % Position vector of the stator centre in the contact plane in I
-    F_c      % Contact force vector
-    fn       % Magnitude of the normal force
-    d        % Radial indentation
+    r_OC      % Position vector of the rotor centre in the contact plane in I
+    s_OC      % Position vector of the stator centre in the contact plane in I
+    F_c       % Contact force vector
+    fn        % Magnitude of the normal force
+    d         % Radial indentation
+
+    % Solver tolerances
+
+    o45_reltol % Relative tolerance for the ode45 solver
+    o45_abstol % Absolute tolerance for the ode45 solver
+    o15_reltol % Relative tolerance for the ode15s solver
+    o15_abstol % Absolute tolerance for the ode15s solver
   end
 
 
@@ -37,6 +44,12 @@ classdef Simulator < handle
 
     function obj = Simulator()
       % Constructor function.
+
+      % Set default solver tolerances
+      obj.o45_reltol = 1e-9;
+      obj.o45_abstol = 1e-9;
+      obj.o15_reltol = 1e-9;
+      obj.o15_abstol = 1e-9;
     end
 
 
@@ -48,9 +61,12 @@ classdef Simulator < handle
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options
-      options_ode45 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, 'MaxStep', 1e-3,...
+      options_ode45 = odeset('RelTol', obj.o45_reltol, ...
+                             'AbsTol', obj.o45_abstol, 'MaxStep', 1e-3,...
                              'Events', @(t,y) impactDetect(t, y, obj.s, 1));
-      options_ode15 = odeset('RelTol', 1e-9, 'AbsTol', 1e-9, ...
+
+      options_ode15 = odeset('RelTol', obj.o15_reltol, ...
+                             'AbsTol', obj.o15_abstol, ...
                              'Events', @(t,y) impactDetect(t, y, obj.s, -1));
 
       loc_tst = tspan(1); % Integration time starting point

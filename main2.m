@@ -22,6 +22,11 @@ sim.y_0(9)  = -3.72e-6;
 sim.y_0(13) = -3.626e-6;
 
 % Solve
+sim.o45_reltol = 1e-9;
+sim.o45_abstol = 1e-9;
+sim.o15_reltol = 1e-9;
+sim.o15_abstol = 1e-9;
+
 sim.solve([0 0.1])
 
 % Calculate forces etc.
