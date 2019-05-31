@@ -28,3 +28,8 @@ sim.solve([0 0.1])
 sim.postprocess();
 
 sim.export('basic')
+
+% Plot stuff
+pt = Plottools();
+
+pt.debugplot('./exp.txt')

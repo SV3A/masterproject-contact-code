@@ -137,8 +137,8 @@ classdef Simulator < handle
                         obj.fn'; obj.d'];
 
       elseif strcmp(export_type, 'all')
-        par_list = {'t', 'rotor_x', 'rotor_y',  'stator_x', 'stator_y', ...
-                    'theta', 'Fn', 'delta', 'x', 'y', 'z'};
+        %par_list = {'t', 'rotor_x', 'rotor_y',  'stator_x', 'stator_y', ...
+                    %'theta', 'Fn', 'delta', 'x', 'y', 'z'};
 
         %value_vector = [value_vector; x; y; z;];
 
@@ -146,7 +146,7 @@ classdef Simulator < handle
         fclose(fileID); error('Unknown export type.')
       end
 
-
+      % Call external function
       export_values(par_list, value_vector)
     end
 
