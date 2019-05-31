@@ -1,7 +1,10 @@
 classdef Plottools < handle
+  % 'Plottools' is a class which defines a common plotting module.
+
   properties (Access = private)
     dbugplots = {};  % Cell array containing debug-plot objects
   end
+
 
   properties (Access = public)
     %
@@ -9,13 +12,15 @@ classdef Plottools < handle
 
 
   methods (Access = public)
+
     function obj = Plottools()
       % Constructor function
     end
 
+
     function debugplot(obj, varargin)
-    % 'debugplot' is a public function handle for creating a debug plot.  The
-    % function takes either 1 input (filename) or 8 (see 'debugplt1_internal').
+      % 'debugplot' is a public function handle for creating a debug plot.  The
+      % function takes 1 input (filename) or 8 (see 'debugplt1_internal').
 
       % If only one arg is given it should be a file to read inputs from
       if length(varargin) == 1
@@ -33,7 +38,7 @@ classdef Plottools < handle
   methods (Access = private)
 
     function debugplt1_internal_f(obj, filepath)
-    % reads file and calls 'debugplt1_internal'.
+      % reads file and calls 'debugplt1_internal'.
 
       % Format of the columns
       formatSpec = '%f %f %f %f %f %f %f %f';
@@ -58,12 +63,13 @@ classdef Plottools < handle
 
     function debugplt1_internal(obj, t, rot_x, rot_y, sta_x, sta_y, theta, ...
                                 fn, d)
-    % 'debugplt1_internal' creates a debug plot.
+      % 'debugplt1_internal' creates a debug plot.
 
       % Create/append a debug object
       obj.dbugplots{size(obj.dbugplots, 2) + 1} = ...
         Debug2(t, rot_x, rot_y, sta_x, sta_y, theta, fn, d);
 
     end
+
   end % private methods
 end % class

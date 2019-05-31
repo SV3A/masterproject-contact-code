@@ -1,42 +1,50 @@
 classdef Simulator < handle
+  % 'Simulator' is a class defining a interface for simulating the rotor-stator
+  % system.
+
   properties (Access = public)
     % Solution properties
-    time = 0           % time
-    solution = []      % solution
-    event_times = []   % event times
-    contact_states = 0 % contact state vector
-    y_0 = zeros(14,1); % initial condition vector
+
+    time = 0           % Time
+    solution = []      % Solution
+    event_times = []   % Event times
+    contact_states = 0 % Contact state vector
+    y_0 = zeros(14,1); % Initial condition vector
 
     % Model objects
-    s                  % rotor-stator system
-    cmod               % contact model
+
+    s        % Rotor-stator system
+    cmod     % Contact model
 
     % Model properties
-    xi
-    m0
-    e
-    fric_mod
+
+    xi       % Damping ratio [-]
+    m0       % Unbalance mass
+    e        % Eccentricity
+    fric_mod % Friction model
 
     % Derived parameters
-    r_OC
-    s_OC
-    F_c
-    fn
-    d
+
+    r_OC     % Position vector of the rotor centre in the contact plane in I
+    s_OC     % Position vector of the stator centre in the contact plane in I
+    F_c      % Contact force vector
+    fn       % Magnitude of the normal force
+    d        % Radial indentation
   end
 
-  methods
+
+  methods (Access = public)
 
     function obj = Simulator()
-    % Constructor
-
+      % Constructor function.
     end
 
-    function solve(obj, tspan)
-      % Initiate system object with parameters 'xi', 'm0' and 'e'
-      obj.s = Rotorsystem(obj.xi, obj.m0, obj.e);
 
-      % Define the contact model
+    function solve(obj, tspan)
+      % 'solve' performs the time integration.
+
+      % Initiate system object
+      obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options
@@ -63,10 +71,10 @@ classdef Simulator < handle
         end
 
         % Collect results
-        obj.time  = [ obj.time(1:end-1)  ; t ];
-        obj.solution  = [ obj.solution(1:end-1,:); y ];
-        obj.contact_states  = [ obj.contact_states(1:end-1); ...
-          contact_state*ones(length(t),1) ];
+        obj.time     = [obj.time(1:end-1)      ; t];
+        obj.solution = [obj.solution(1:end-1,:); y];
+        obj.contact_states  = [obj.contact_states(1:end-1); ...
+                               contact_state*ones(length(t),1)];
         obj.event_times = [obj.event_times; te];
 
         % Assign new initial conditions
@@ -82,9 +90,9 @@ classdef Simulator < handle
 
 
     function postprocess(obj)
-    % 'postprocess' calculate the forces associated with a given solution.
+      % 'postprocess' calculate the forces associated with a given solution.
 
-      % Check if solution
+      % Check if solution is present
       if isempty(obj.solution)
         error('No solution present.')
       end
@@ -93,7 +101,7 @@ classdef Simulator < handle
       obj.r_OC = zeros( 3, length(obj.time) );
       F_cxs    = zeros( length(obj.time), 1 );
       F_cys    = zeros( length(obj.time), 1 );
-      obj.d        = zeros( length(obj.time), 1 );
+      obj.d    = zeros( length(obj.time), 1 );
 
       % Build orbit in I, get contact forces, retrieve the contact angle and get
       % relative radial velocity
@@ -109,7 +117,6 @@ classdef Simulator < handle
         [F_cxs(i), F_cys(i)] = contactForce(y_i, obj.s, obj.cmod, state);
 
         obj.d(i) = obj.s.calc_indent(y_i);
-
       end
 
       obj.F_c = [F_cxs'; F_cys'; zeros(1, size(obj.solution, 1))];
@@ -118,14 +125,14 @@ classdef Simulator < handle
       obj.fn = sqrt(F_cxs.^2 + F_cys.^2);
 
       % Stator centre in the plane of contact
-      obj.s_OC = [
-        obj.solution(:, 7)'
-        obj.solution(:, 9)'
-        zeros(size(obj.solution, 1)) ];
+      obj.s_OC = [obj.solution(:, 7)'
+                  obj.solution(:, 9)'
+                  zeros(size(obj.solution, 1))];
     end
 
+
     function export(obj, export_type)
-    % 'export' handle for function to export the solution to a text file.
+      % 'export' handle for function to export the solution to a text file.
 
       % Define parameter list
       if strcmp(export_type, 'basic')
@@ -141,7 +148,6 @@ classdef Simulator < handle
                     %'theta', 'Fn', 'delta', 'x', 'y', 'z'};
 
         %value_vector = [value_vector; x; y; z;];
-
       else
         fclose(fileID); error('Unknown export type.')
       end

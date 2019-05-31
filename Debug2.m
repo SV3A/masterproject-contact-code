@@ -3,19 +3,21 @@ classdef Debug2 < handle
 
   properties (Access = private)
     % Solution data
-    time
-    rot_x
-    rot_y
-    sta_x
-    sta_y
-    theta
-    fn
-    d
-    r_r = 25e-3/2;    % Rotor radius [m]
-    r_s = 29e-3/2;    % Stator radius [m]
+
+    time           % time
+    rot_x          % x-coord of rotor in contact plane
+    rot_y          % y-coord of rotor in contact plane
+    sta_x          % x-coord of stator in contact plane
+    sta_y          % y-coord of stator in contact plane
+    theta          % Rotation angle
+    fn             % Magnitude of normal force
+    d              % Indentation
+    r_r = 25e-3/2; % Rotor radius [m]
+    r_s = 29e-3/2; % Stator radius [m]
 
 
     % Plot and GUI handles
+
     mainfig
     rotor
     stator
@@ -32,22 +34,15 @@ classdef Debug2 < handle
     sens_button
     fwd_button
     bwd_button
-
-    % Slider steps
     sld_step
     sld_finestep
   end % properties
 
+
   methods (Access = public)
+
     function obj = Debug2(time, rot_x, rot_y, sta_x, sta_y, theta, fn, d)
       % Constructor function.
-      % INPUT:
-      %   time  : Time steps
-      %   y_total  : Solution step
-      %   te_total : Event times
-      %   s_total  : Contact states
-      %   s        : Rotor system object
-      %   cmod     : Contact model object
 
       obj.time  = time;
       obj.rot_x = rot_x;
@@ -62,15 +57,18 @@ classdef Debug2 < handle
       obj.sld_step = 30/length(obj.time);
       obj.sld_finestep = 1/length(obj.time);
 
+      % Setup debug plot and start GUI
       obj.setupPlots();
       obj.setupGUI();
     end
-  end
+
+  end % methods
+
 
   methods (Access = private)
 
-    % 'setupPlots' sets up the different plot windows.
     function setupPlots(obj)
+      % 'setupPlots' sets up the different plot windows.
 
       % Create main figure window
       obj.mainfig = figure('units', 'normalized', 'outerposition', [0 0 1 1]);
@@ -116,8 +114,9 @@ classdef Debug2 < handle
     end
 
 
-    % 'setupGUI' sets up GUI elements.
     function setupGUI(obj)
+      % 'setupGUI' sets up GUI elements.
+
       % Add info text field
       obj.info_field = uicontrol('style', 'text', ...
         'backgroundcolor', [1 1 1], ...
@@ -189,6 +188,7 @@ classdef Debug2 < handle
       uicontrol(obj.sld_handle)
 
     end
+
 
     function updatefig(obj)
       % 'updatefig' updates the debug plot.
@@ -283,6 +283,7 @@ classdef Debug2 < handle
       drawnow
     end
 
+
     function keypress(obj, ~, event)
       % 'keypress' is a function defining shortcut actions for the debug window.
 
@@ -303,6 +304,7 @@ classdef Debug2 < handle
       end
     end
 
+
     function toggleSldSens(obj)
       % 'toggleSldSens' is a callback function for a sens_button.  It toggles
       % the slider step.
@@ -316,6 +318,7 @@ classdef Debug2 < handle
       % Focus slider
       uicontrol(obj.sld_handle)
     end
+
 
     function stepImpact(obj, dir)
       % 'stepImpact' is a callback function to jump to the next/previous
@@ -359,6 +362,6 @@ classdef Debug2 < handle
       % Refocus the slider
       uicontrol(obj.sld_handle)
     end
+
   end % methods
 end % class
-
