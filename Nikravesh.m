@@ -7,11 +7,12 @@ classdef Nikravesh < Contactmodels
 %   By: Lankarani, H. M. and Nikravesh, P. E.
 
   properties (Constant)
-    E_r  = 70e9;   % Young's modulus sphere (rotor material part) [Pa]
-    E_s  = 100e9;  % Young's modulus sphere (stator material part) [Pa]
-    nu_r = 0.35;   % Poisson's ratio for the rotor material [-]
-    nu_s = 0.35;   % Poisson's ratio for the stator material [-]
+    E_r  = 70e9;  % Young's modulus sphere (rotor material part) [Pa]
+    E_s  = 100e9; % Young's modulus sphere (stator material part) [Pa]
+    nu_r = 0.35;  % Poisson's ratio for the rotor material [-]
+    nu_s = 0.35;  % Poisson's ratio for the stator material [-]
   end
+
 
   properties
     n             % Penetration exponent
@@ -20,12 +21,14 @@ classdef Nikravesh < Contactmodels
     delta_d_init  % Relative velocity at impact instant
   end
 
+
   methods
+
     function obj = Nikravesh(friction_model, r_s, r_r)
-    % Constructor function.
-    % INPUT:
-    %   r_s: stator inner radius
-    %   r_r: rotor radius
+      % Constructor function.
+      % INPUT:
+      %   r_s: stator inner radius
+      %   r_r: rotor radius
 
       % Send friction model to super class constructor
       obj = obj@Contactmodels(friction_model);
@@ -45,15 +48,16 @@ classdef Nikravesh < Contactmodels
       obj.delta_d_init = 0;
     end
 
+
     function Fn = calc_fn(obj, d, d_dot)
-    % 'calc_fn' calculates the magnitude of the radial normal force
-    % INPUT:
-    %   d       : penetration
-    %   d_dot   : relative velocity between rotor and stator
+      % Calculates the magnitude of the radial normal force
+      % INPUT:
+      %   d    : penetration
+      %   d_dot: relative velocity between rotor and stator
 
       Fn = obj.K * d^obj.n * ( 1 + (3*(1-obj.ce^2)/4)*d_dot/obj.delta_d_init );
 
     end
-  end
-end
 
+  end
+end % class

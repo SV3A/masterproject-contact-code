@@ -57,11 +57,11 @@ classdef Rotorsystem < handle
 
   methods (Access = public)
     function obj = Rotorsystem(xi, m0, e)
-    % Constructor function.
-    % INPUT:
-    %   xi: damping ratio
-    %   m0: unbalance mass
-    %   e : unbalance eccentricity
+      % Constructor function.
+      % INPUT:
+      %   xi: damping ratio
+      %   m0: unbalance mass
+      %   e : unbalance eccentricity
 
       obj.m0 = m0;
       obj.e  = e;
@@ -77,7 +77,8 @@ classdef Rotorsystem < handle
 
 
     function T_gamma = T_gam(~, gamma)
-    % Transformation matrix from I  to B1
+      % Transformation matrix from I to B1
+
       T_gamma = [1       0          0
                  0  cos(gamma) sin(gamma)
                  0 -sin(gamma) cos(gamma)];
@@ -85,7 +86,8 @@ classdef Rotorsystem < handle
 
 
     function T_beta = T_bet(~, beta)
-    % Transformation matrix from B1 to B2
+      % Transformation matrix from B1 to B2
+
       T_beta = [cos(beta) 0 -sin(beta)
                     0     1      0
                 sin(beta) 0  cos(beta)];
@@ -93,7 +95,8 @@ classdef Rotorsystem < handle
 
 
     function T_theta = T_the(~, theta)
-    % Transformation matrix from B2 to B3
+      % Transformation matrix from B2 to B3
+
       T_theta = [ cos(theta) sin(theta) 0
                  -sin(theta) cos(theta) 0
                        0          0     1];
@@ -101,30 +104,29 @@ classdef Rotorsystem < handle
 
 
     function r_OR = rot_centrepos(obj, y)
-    % 'r_OR(y)' gets position of the rotor centre in the contact plane in the
-    % inertial coordinate system.
-    %
-    % INPUT:
-    %   y: State vector.
+      % Gets position of the rotor centre in the contact plane in the inertial
+      % coordinate system.
+      %
+      % INPUT:
+      %   y: State vector.
 
       r_OR = obj.T_gam(y(1))' * (obj.T_bet(y(3))' * [0; 0; obj.l_OC]);
     end
 
 
     function indent = calc_indent(obj, y)
-    % 'calc_indent(y)' calculates the size of the indent between the rotor and
-    % stator.
-    %
-    % INPUT:
-    %   y: State vector.
-    %
-    % OUTPUT:
-    %   indent: The size of the 'indent', where the indent is represented as
-    %   the rotor centre position minus the clearance, thus the output is
-    %   negative when the rotor is not in contact with the stator, and positive
-    %   otherwise, during which the output signifies the penetration of the
-    %   rotor into the stator material.
-    %
+      % Calculates the size of the indent between the rotor and stator.
+      %
+      % INPUT:
+      %   y: State vector.
+      %
+      % OUTPUT:
+      %   indent: The size of the 'indent', where the indent is represented as
+      %   the rotor centre position minus the clearance, thus the output is
+      %   negative when the rotor is not in contact with the stator, and
+      %   positive otherwise, during which the output signifies the penetration
+      %   of the rotor into the stator material.
+
       % Get rotor centre position
       r_OR = obj.rot_centrepos(y);
 
@@ -134,9 +136,9 @@ classdef Rotorsystem < handle
 
 
     function alpha = contact_ang(obj, y)
-    % 'contact_ang(y)' calculates the contact angle between houses and rotor.
-    % INPUT:
-    %   y: State vector.
+      % Calculates the contact angle between houses and rotor.
+      % INPUT:
+      %   y: State vector.
 
       % Get rotor centre position
       r_OR = obj.rot_centrepos(y);
@@ -146,10 +148,10 @@ classdef Rotorsystem < handle
 
 
     function v_rc = rotor_linvel(obj, y)
-    % 'rotor_linvel(y)' calculates the linear velocity of the rotor centre in
-    % the inertial coordinate system.
-    % INPUT:
-    %   y: State vector.
+      % Calculates the linear velocity of the rotor centre in
+      % the inertial coordinate system.
+      % INPUT:
+      %   y: State vector.
 
       % Absolute angular velocity of the reference frame B2
       Omega_B2 = obj.T_bet(y(3)) * obj.T_gam(y(1)) * [y(2); 0; 0] + ...
@@ -162,20 +164,20 @@ classdef Rotorsystem < handle
 
 
     function v_rel = abs_rel_velocity(obj, y)
-    % 'rel_velocity' calculates the relative velocity between the rotor and
-    % the stator in the inertial coordinate system.
-    % INPUT:
-    %   y: State vector.
+      % Calculates the relative velocity between the rotor and
+      % the stator in the inertial coordinate system.
+      % INPUT:
+      %   y: State vector.
 
       v_rel = obj.rotor_linvel(y) - [y(7); y(9); 0];
     end
 
 
     function vt_rel = tan_rel_velocity(obj, y)
-    % 'tan_rel_velocity' calculates the tangential compoent of the relative
-    % velocity between the rotor and stator.
-    % INPUT:
-    %   y: State vector.
+      % Calculates the tangential compoent of the relative
+      % velocity between the rotor and stator.
+      % INPUT:
+      %   y: State vector.
 
       v_rel = obj.abs_rel_velocity(y);
 
@@ -187,9 +189,9 @@ classdef Rotorsystem < handle
 
 
     function [delta_d, v_rel_r] = pen_rate(obj, y)
-    % 'pen_rate' calculates the penetration rate.
-    % INPUT:
-    %   y: State vector.
+      % Calculates the penetration rate.
+      % INPUT:
+      %   y: State vector.
 
       % Get contact angle between rotor and inner house
       alpha = obj.contact_ang(y);

@@ -55,7 +55,7 @@ classdef Simulator < handle
 
 
     function solve(obj, tspan)
-      % 'solve' performs the time integration.
+      % Performs the time integration.
 
       % Initiate system object
       obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
@@ -107,7 +107,7 @@ classdef Simulator < handle
 
 
     function postprocess(obj)
-      % 'postprocess' calculate the forces associated with a given solution.
+      % Calculates the forces associated with a given solution.
 
       % Check if solution is present
       if isempty(obj.solution)
@@ -151,7 +151,7 @@ classdef Simulator < handle
 
 
     function export(obj, export_type)
-      % 'export' handle for function to export the solution to a text file.
+      % A handle for function to export the solution to a text file.
 
       % Define parameter list
       if strcmp(export_type, 'basic')

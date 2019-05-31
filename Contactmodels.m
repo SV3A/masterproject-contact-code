@@ -7,18 +7,20 @@ classdef Contactmodels < handle
     name % Name of the contact model
   end
 
+
   properties
     mu_k            % Friction coefficient
-    v_0  = 0.0001;  % [m/s]  lower velocity tolerance
-    v_1  = 0.0002;  % [m/s]  upper velocity tolerance
+    v_0  = 0.0001;  % Lower velocity tolerance [m/s]
+    v_1  = 0.0002;  % Upper velocity tolerance [m/s]
     calc_ff
   end
 
+
   methods
     function obj = Contactmodels(friction_model)
-    % Constructor function.
-    % INPUT:
-    %   friction_model: Parameter defining which friction model to use
+      % Constructor function.
+      % INPUT:
+      %   friction_model: Parameter defining which friction model to use
 
       obj.mu_k = 0.2;
 
@@ -33,15 +35,16 @@ classdef Contactmodels < handle
     end
 
     function Ff = calc_ff_ambrosio(obj, Fn, vt_rel)
-    % 'calc_ff_ambrosio' implements the friction model set forth in the
-    % article "Influence of the contact–impact force model on the dynamic
-    % response of multi-body systems"
-    % In: Proc. IMechE, Year 2006, Volume 220.
-    % By: Flores, P. and Ambrósio, J. and Claro, J. C. P. and Lankarani, H. M.
-    %
-    % INPUT:
-    %   Fn: Normal force (scalar)
-    %   vt_rel: Relative tangential velocity
+      % Implements the friction model set forth in the article:
+      %   "Influence of the contact–impact force model on the dynamic response
+      %   of multi-body systems"
+      %   In: Proc. IMechE, Year 2006, Volume 220.
+      %   By: Flores, P. and Ambrósio, J. and Claro, J. C. P. and
+      %   Lankarani, H. M.
+      %
+      % INPUT:
+      %   Fn: Normal force (scalar)
+      %   vt_rel: Relative tangential velocity
 
       % Dynamical correction coefficient
       if (obj.v_1 < norm(vt_rel))
@@ -56,10 +59,11 @@ classdef Contactmodels < handle
     end
   end
 
+
   methods (Access = protected)
     function print_name(obj)
-    % 'print_name' displays the current contact model in the console.
+      % Displays the current contact model in the console.
       fprintf('Using the %s model.\n', obj.name)
     end
   end
-end
+end % class

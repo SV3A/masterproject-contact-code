@@ -9,11 +9,6 @@ classdef Plottools < handle
   end
 
 
-  properties (Access = public)
-    %
-  end
-
-
   methods (Access = public)
 
     function obj = Plottools()
@@ -22,8 +17,8 @@ classdef Plottools < handle
 
 
     function debugplot(obj, varargin)
-      % 'debugplot' is a public function handle for creating a debug plot.  The
-      % function takes 1 input (filename) or 8 (see 'debugplt1_internal').
+      % A public function handle for creating a debug plot.  The function takes
+      % either 1 input (filename) or 8 (see 'debugplt1_internal').
 
       % If only one arg is given it should be a file to read inputs from
       if length(varargin) == 1
@@ -37,7 +32,7 @@ classdef Plottools < handle
 
 
     function orbit(obj, rot_x, rot_y, clearance)
-      % plots the rotor orbit inside the stator boundary (clearance circle).
+      % Plots the rotor orbit inside the stator boundary (clearance circle).
 
       % Create figure or overwrite it
       obj.orbit_plt = obj.set_fig(obj.orbit_plt);
@@ -59,7 +54,7 @@ classdef Plottools < handle
 
     function states(obj, t, state_vector)
       % Plots the state vector.
-      % Input:
+      % INPUT:
       %   state_vector: A matrix of dimension 'n x number_of_states'
 
       % Create figure or overwrite it
@@ -91,7 +86,7 @@ classdef Plottools < handle
   methods (Access = private)
 
     function debugplt1_internal_f(obj, filepath)
-      % reads file and calls 'debugplt1_internal'.
+      % Reads file and calls 'debugplt1_internal'.
 
       % Format of the columns
       formatSpec = '%f %f %f %f %f %f %f %f';
@@ -117,7 +112,7 @@ classdef Plottools < handle
 
     function debugplt1_internal(obj, t, rot_x, rot_y, sta_x, sta_y, theta, ...
                                 fn, d)
-      % 'debugplt1_internal' creates a debug plot.
+      % Creates a debug plot.
 
       % Create/append a debug object
       obj.dbugplots{size(obj.dbugplots, 2) + 1} = ...
@@ -131,7 +126,7 @@ classdef Plottools < handle
   methods (Static, Access = private)
 
     function fig_obj = set_fig(fig_handle)
-      % creates a figure or focusses it and thereby overwrites it
+      % Creates a figure or focusses it and thereby overwrites it
       if isempty(fig_handle)
         fig_obj = figure();
       else
