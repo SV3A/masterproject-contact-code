@@ -125,9 +125,9 @@ classdef Simulator < handle
       obj.fn = sqrt(F_cxs.^2 + F_cys.^2);
 
       % Stator centre in the plane of contact
-      obj.s_OC = [obj.solution(:, 7)'
-                  obj.solution(:, 9)'
-                  zeros(size(obj.solution, 1))];
+      obj.s_OC = [obj.solution(:, 7)';
+                  obj.solution(:, 9)';
+                  zeros(1, size(obj.solution, 1))];
     end
 
 
