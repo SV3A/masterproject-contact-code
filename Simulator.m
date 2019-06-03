@@ -2,7 +2,7 @@ classdef Simulator < handle
   % 'Simulator' is a class defining a interface for simulating the rotor-stator
   % system.
 
-  properties (Access = public)
+  properties
     % Solution properties
 
     time           % Time
@@ -41,7 +41,7 @@ classdef Simulator < handle
   end
 
 
-  methods (Access = public)
+  methods
 
     function obj = Simulator()
       % Constructor function.

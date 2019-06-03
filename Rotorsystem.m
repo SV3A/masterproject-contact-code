@@ -45,7 +45,7 @@ classdef Rotorsystem < handle
   end
 
 
-  properties (Access = public)
+  properties
     m0  % Unbalance mass
     e   % Eccentricity
     xi  % Damping ratio [-]
@@ -55,7 +55,7 @@ classdef Rotorsystem < handle
   end
 
 
-  methods (Access = public)
+  methods
     function obj = Rotorsystem(xi, m0, e)
       % Constructor function.
       % INPUT:
