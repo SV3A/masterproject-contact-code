@@ -108,6 +108,7 @@ classdef Simulator < handle
         loc_tst = t(end);
         y0 = y(end,:);
 
+        % Print feedback
         fprintf('t_n = %f s\n', obj.time(end));
       end
       toc
