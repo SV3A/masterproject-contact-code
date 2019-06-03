@@ -150,7 +150,9 @@ classdef Debug1 < handle
 
       xlabel('Time [s]')
       ylabel('Force [N]')
-      obj.fplt.YLim = [0 max(obj.F_r)];
+      if sum(obj.F_r) > 0
+        obj.fplt.YLim = [0 max(obj.F_r)];
+      end
 
       % Force-indentation plot
       subplot(2,2,4);
