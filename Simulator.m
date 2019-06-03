@@ -5,11 +5,11 @@ classdef Simulator < handle
   properties (Access = public)
     % Solution properties
 
-    time = 0           % Time
-    solution = []      % Solution
-    event_times = []   % Event times
-    contact_states = 0 % Contact state vector
-    y_0 = zeros(14,1); % Initial condition vector
+    time           % Time
+    solution       % Solution
+    event_times    % Event times
+    contact_states % Contact state vector
+    y_0            % Initial condition vector
 
     % Model objects
 
@@ -51,11 +51,20 @@ classdef Simulator < handle
       obj.o45_abstol = 1e-9;
       obj.o15_reltol = 1e-9;
       obj.o15_abstol = 1e-9;
+
+      % Initial condition
+      obj.y_0 = zeros(14,1);
     end
 
 
     function solve(obj, tspan)
       % Performs the time integration.
+
+      % Init/clear
+      obj.time           = 0;
+      obj.solution       = [];
+      obj.event_times    = [];
+      obj.contact_states = 0;
 
       % Initiate system object
       obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
@@ -115,10 +124,13 @@ classdef Simulator < handle
         error('No solution present.')
       end
 
-      % Init
-      obj.r_OC = zeros( 3, length(obj.time) );
+      % Init/clear
       F_cxs    = zeros( length(obj.time), 1 );
       F_cys    = zeros( length(obj.time), 1 );
+      obj.r_OC = zeros( 3, length(obj.time) );
+      obj.s_OC = zeros( 3, length(obj.time) );
+      obj.F_c  = zeros( 3, length(obj.time) );
+      obj.fn   = zeros( length(obj.time), 1 );
       obj.d    = zeros( length(obj.time), 1 );
 
       % Build orbit in I, get contact forces, retrieve the contact angle and get
