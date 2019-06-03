@@ -71,20 +71,21 @@ classdef Simulator < handle
                              'Events', @(t,y) impactDetect(t, y, obj.s, -1));
 
       loc_tst = tspan(1); % Integration time starting point
+      y0 = obj.y_0;       % Initial condition
 
       tic
       while obj.time(end) ~= tspan(2)
 
-        indent = obj.s.calc_indent(obj.y_0);
+        indent = obj.s.calc_indent(y0);
 
-        if indent <= 0
+        if indent < 0 || ( indent == 0 && obj.s.pen_rate(y0) < 0 )
           contact_state = 0;
           [t, y, te] =  ode45(@(t,y) dydt(t, y, obj.s, obj.cmod, ...
-            contact_state), [loc_tst, tspan(2)], obj.y_0, options_ode45);
+            contact_state), [loc_tst, tspan(2)], y0, options_ode45);
         else
           contact_state = 1;
           [t, y, te] = ode15s(@(t,y) dydt(t, y, obj.s, obj.cmod, ...
-            contact_state), [loc_tst, tspan(2)], obj.y_0, options_ode15);
+            contact_state), [loc_tst, tspan(2)], y0, options_ode15);
         end
 
         % Collect results
@@ -96,9 +97,9 @@ classdef Simulator < handle
 
         % Assign new initial conditions
         loc_tst = t(end);
-        obj.y_0 = y(end,:);
+        y0 = y(end,:);
 
-        obj.time(end)
+        fprintf('t_n = %f s\n', obj.time(end));
       end
       toc
 
