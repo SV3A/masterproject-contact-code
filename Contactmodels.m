@@ -9,14 +9,15 @@ classdef Contactmodels < handle
 
 
   properties
-    mu_k            % Friction coefficient
-    v_0  = 0.0001;  % Lower velocity tolerance [m/s]
-    v_1  = 0.0002;  % Upper velocity tolerance [m/s]
+    mu_k         % Friction coefficient
+    v_0  = 1e-4; % Lower velocity tolerance [m/s]
+    v_1  = 2e-4; % Upper velocity tolerance [m/s]
     calc_ff
   end
 
 
   methods
+
     function obj = Contactmodels(friction_model)
       % Constructor function.
       % INPUT:
@@ -34,6 +35,7 @@ classdef Contactmodels < handle
       end
     end
 
+
     function Ff = calc_ff_ambrosio(obj, Fn, vt_rel)
       % Implements the friction model set forth in the article:
       %   "Influence of the contact–impact force model on the dynamic response
@@ -46,7 +48,9 @@ classdef Contactmodels < handle
       %   Fn: Normal force (scalar)
       %   vt_rel: Relative tangential velocity
 
-      % Dynamical correction coefficient
+      % Dynamical correction coefficient, this makes the friction force
+      % disappear close to 0 velocity, and introduces a linear increase from
+      % this 0 niveau to static values
       if (obj.v_1 < norm(vt_rel))
         n_d = 1;
       elseif obj.v_0 < norm(vt_rel) & norm(vt_rel) <= obj.v_1
@@ -55,15 +59,24 @@ classdef Contactmodels < handle
         n_d = 0;
       end
 
+      % Magnitude of the friction force (notice the sign follows the velocity)
+      %           |  ___ + Ff
+      %          _|_/
+      % - Ff ___/ |
+      %      -----|-----  v
+      %      -    0    +
       Ff = Fn * obj.mu_k * sign(vt_rel) * n_d;
     end
+
   end
 
 
   methods (Access = protected)
+
     function print_name(obj)
       % Displays the current contact model in the console.
       fprintf('Using the %s model.\n', obj.name)
     end
+
   end
 end % class

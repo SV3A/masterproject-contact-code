@@ -36,17 +36,19 @@ function [F_cx, F_cy, delta, delta_d] = contactForce(y, s, cmod, state)
     % Penetration rate
     delta_d = s.pen_rate(y);
 
+    % Relative velocity between the rotor- and stator surface (that is the
+    % tangential component)
+    vt_rel = s.tan_rel_velocity(y);
+
+    % Normal- and friction force
+    Fn = cmod.calc_fn(delta, delta_d);
+    Ff = cmod.calc_ff(Fn, vt_rel);
+
     % Contact angle
     alpha = s.contact_ang(y);
 
-    % Normal force
-    Fn = cmod.calc_fn(delta, delta_d);
-
-    % Friction force
-    Ff = cmod.calc_ff(Fn, s.tan_rel_velocity(y));
-
     % Contact forces in the inertial coordinate system
-    F = Fn * [cos(alpha); sin(alpha); 0] + Ff * [-sin(alpha); cos(alpha); 0];
+    F = s.T_the(alpha)' * [Fn; Ff; 0];
 
     F_cx = F(1);
     F_cy = F(2);
