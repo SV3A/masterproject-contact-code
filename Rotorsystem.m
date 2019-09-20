@@ -6,8 +6,6 @@ classdef Rotorsystem < handle
   %        x_ih, x_ih_d, y_ih, y_ih_d, x_mh, x_mh_d, y_mh, y_mh_d]^T
 
   properties (Constant)
-    g = 9.81; % Gravity constant [m/s^2]
-
     r_r = 25e-3/2;   % Rotor radius [m]
     r_s = 29e-3/2;   % Stator radius [m]
 
@@ -16,14 +14,16 @@ classdef Rotorsystem < handle
     l_OD = 259.7e-3; % Position vector, pivot point to the disc [m]
     l_OC = 413.7e-3; % Position vector, pivot point to contact point [m]
 
-    m_tot = 1.486;   % Shaft mass (including discs) [kg]
+    I_xx = 7.085371 * 1e-2; % Mass moment of inertia component [kg*m^2]
+    I_yy = 7.085371 * 1e-2; % Mass moment of inertia component [kg*m^2]
+    %I_zz = 981365 * 1e-9;      % Mass moment of inertia component [kg*m^2]
+    I_zz = 0.106132 * 1e-2;      % Mass moment of inertia component [kg*m^2]
 
-    I_xx = 73399360 * 1e-9; % Mass moment of inertia component [kg*m^2]
-    I_yy = 73399360 * 1e-9; % Mass moment of inertia component [kg*m^2]
-    I_zz = 981365 * 1e-9;   % Mass moment of inertia component [kg*m^2]
+    K_mx = 3.09*10^4;  % Stiffness of the magnetic bearing in x [N/m]
+    K_my = 3.09*10^4;  % Stiffness of the magnetic bearing in y [N/m]
 
-    K_mx = 3.4675*10^4; % Stiffness of the magnetic bearing in x [N/m]
-    K_my = 3.4675*10^4; % Stiffness of the magnetic bearing in y [N/m]
+    D_x = 40.9;     % Damping coefficient in x [N*s/m]
+    D_y = 7.7;      % Damping coefficient in y [N*s/m]
 
     l_OIH = 413.7e-3;   % Position vector, pivot point to inner house [m]
     l_OMH = 413.7e-3;   % Position vector, pivot point to middle [m]
@@ -48,9 +48,6 @@ classdef Rotorsystem < handle
   properties
     m0  % Unbalance mass
     e   % Eccentricity
-    xi  % Damping ratio [-]
-    D_x % Damping coefficient in x [N*s/m]
-    D_y % Damping coefficient in y [N*s/m]
     cl  % Clearance [m]
   end
 
@@ -65,11 +62,6 @@ classdef Rotorsystem < handle
 
       obj.m0 = m0;
       obj.e  = e;
-      obj.xi = xi;
-
-      % Calculate damping factor
-      obj.D_x = 2*obj.xi*sqrt( obj.K_mx*obj.m_tot );
-      obj.D_y = 2*obj.xi*sqrt( obj.K_my*obj.m_tot );
 
       % Calculate clearance
       obj.cl = obj.r_s - obj.r_r;

@@ -10,31 +10,29 @@ clc; clearvars; close all
 % Initiate simulation
 sim = Simulator;
 
-sim.xi       = 0;
-sim.m0       = 30e-3;
+sim.xi       = 0.1;
+sim.m0       = 20e-3;
 sim.e        = 10e-3;
 sim.fric_mod = 'ambrosio';
 
 % Initial conditions
-sim.y_0(1)  = 0.002796;
-sim.y_0(6)  = 18.9*2*pi;
-sim.y_0(9)  = -3.72e-6;
-sim.y_0(13) = -3.626e-6;
+sim.y_0(6) = 15*2*pi;
 
 % Solve
-sim.o45_reltol = 1e-9;
-sim.o45_abstol = 1e-9;
-sim.o15_reltol = 1e-9;
-sim.o15_abstol = 1e-9;
+%sim.o15_reltol = 1e-8; % Relative tolerance for the ode15s solver
+%sim.o15_abstol = 1e-8; % Absolute tolerance for the ode15s solver
 
-sim.solve([0 0.1])
+sim.solve([0 60])
 
 % Calculate forces etc.
 sim.postprocess();
 
-sim.export('basic')
+%sim.export('basic')
 
 % Plot stuff
 pt = Plottools();
 
-pt.debugplot('./exp.txt')
+pt.orbit(sim.r_OC(1, :), sim.r_OC(2, :), sim.clearance)
+pt.states(sim.time, sim.solution(:, 1:2:end), {'\Gamma', '\beta', '\theta', ...
+          'x_{ih}', 'y_{ih}', 'x_{oh}', 'y_{ih}'})
+

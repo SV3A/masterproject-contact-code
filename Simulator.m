@@ -27,6 +27,7 @@ classdef Simulator < handle
     % Derived parameters
 
     r_OC      % Position vector of the rotor centre in the contact plane in I
+    r_OD      % Position vector of the rotor centre in the disc plane in I
     s_OC      % Position vector of the stator centre in the contact plane in I
     F_c       % Contact force vector
     fn        % Magnitude of the normal force
@@ -57,6 +58,46 @@ classdef Simulator < handle
     end
 
 
+    function ssolve(obj, tspan)
+      % Performs the time integration using only the 15s solver.
+
+      % Init/clear
+      obj.time           = 0;
+      obj.solution       = [];
+      obj.event_times    = [];
+      obj.contact_states = 0;
+
+      % Initiate system object
+      obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
+      obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
+
+      % Solver options
+      options_ode15 = odeset('RelTol', obj.o15_reltol, ...
+                             'AbsTol', obj.o15_abstol, ...
+                             'Events', @(t,y) impactDetect(t, y, obj.s, 0, 0));
+
+      tic
+      [t, y, te] = ode15s(@(t,y) dydt(t, y, obj.s, obj.cmod, 0), tspan, ...
+                          obj.y_0, options_ode15);
+      toc
+
+      % Collect results
+      obj.time     = [obj.time(1:end-1)      ; t];
+      obj.solution = [obj.solution(1:end-1,:); y];
+      obj.event_times = te;
+
+      % Find contact states
+      for i = 1:size(y, 1)
+        if obj.s.calc_indent(y(i,:)) <= 0
+          obj.contact_states(i) = 0;
+        else
+          obj.contact_states = 1;
+        end
+      end
+
+      fprintf('%i perimeter crossings detected\n', length(obj.event_times))
+    end
+
     function solve(obj, tspan)
       % Performs the time integration.
 
@@ -73,11 +114,11 @@ classdef Simulator < handle
       % Solver options
       options_ode45 = odeset('RelTol', obj.o45_reltol, ...
                              'AbsTol', obj.o45_abstol, 'MaxStep', 1e-3,...
-                             'Events', @(t,y) impactDetect(t, y, obj.s, 1));
+                             'Events', @(t,y) impactDetect(t, y, obj.s, 1, 1));
 
       options_ode15 = odeset('RelTol', obj.o15_reltol, ...
                              'AbsTol', obj.o15_abstol, ...
-                             'Events', @(t,y) impactDetect(t, y, obj.s, -1));
+                             'Events', @(t,y) impactDetect(t, y, obj.s, -1, 1));
 
       loc_tst = tspan(1); % Integration time starting point
       y0 = obj.y_0;       % Initial condition
@@ -129,6 +170,7 @@ classdef Simulator < handle
       F_cxs    = zeros( length(obj.time), 1 );
       F_cys    = zeros( length(obj.time), 1 );
       obj.r_OC = zeros( 3, length(obj.time) );
+      obj.r_OD = zeros( 3, length(obj.time) );
       obj.s_OC = zeros( 3, length(obj.time) );
       obj.F_c  = zeros( 3, length(obj.time) );
       obj.fn   = zeros( length(obj.time), 1 );
@@ -142,6 +184,7 @@ classdef Simulator < handle
         T_gamma = obj.s.T_gam(obj.solution(i, 1));
         T_beta  = obj.s.T_bet(obj.solution(i, 3));
         obj.r_OC(:,i) = T_gamma' * (T_beta'*[0; 0; obj.s.l_OC]);
+        obj.r_OD(:,i) = T_gamma' * (T_beta'*[0; 0; obj.s.l_OD]);
 
         if obj.contact_states(i) == 0, state = 0; else, state = 1;  end
 
