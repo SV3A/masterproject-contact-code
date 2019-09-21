@@ -117,7 +117,12 @@ classdef Debug1 < handle
     function setupPlots(obj)
 
       % Create main figure window
-      obj.mainfig = figure('units', 'normalized', 'outerposition', [0 0 1 1]);
+      obj.mainfig = figure('units', 'normalized');
+
+      % If MATLAB default win style is "docked" don't resize the figure
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.mainfig, 'outerposition', [0 0 1 1]);
+      end
 
       % Rotor and stator perimeter circles
       subplot(2,2,[1,3]); hold on

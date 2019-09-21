@@ -39,7 +39,12 @@ classdef Plottools < handle
 
       % Set figure properties
       set(obj.orbit_plt, 'name', 'Orbit Plot', 'color', 'w', ...
-          'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
+          'units', 'normalized');
+
+      % If MATLAB default win style is "docked" don't resize the figure
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.orbit_plt, 'outerposition', [0.5 0 0.5 1]);
+      end
 
       % Rotor orbit (converted to [mm])
       plot(rot_x * 1e3, rot_y * 1e3, 'b', 'LineWidth', 1.2); grid on; hold on
@@ -65,7 +70,11 @@ classdef Plottools < handle
 
       % Set figure properties
       set(obj.state_plt, 'name', 'State Plot', 'color', 'w', ...
-          'units', 'normalized', 'outerposition', [0.5 0 0.5 1]);
+          'units', 'normalized');
+
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.state_plt, 'outerposition', [0.5 0 0.5 1]);
+      end
 
       % Number of subplots
       plt_num = size(state_vector, 2);
