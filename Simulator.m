@@ -18,9 +18,6 @@ classdef Simulator < handle
 
     % Model properties
 
-    xi        % Damping ratio [-]
-    m0        % Unbalance mass
-    e         % Eccentricity
     fric_mod  % Friction model
     clearance % Static clearance between the rotor and stator
 
@@ -54,7 +51,7 @@ classdef Simulator < handle
       obj.o15_abstol = 1e-9;
 
       % Initial condition
-      obj.y_0 = zeros(14,1);
+      obj.y_0 = zeros(14, 1);
     end
 
 
@@ -68,7 +65,7 @@ classdef Simulator < handle
       obj.contact_states = 0;
 
       % Initiate system object
-      obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
+      obj.s    = Rotorsystem();
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options
@@ -108,7 +105,7 @@ classdef Simulator < handle
       obj.contact_states = 0;
 
       % Initiate system object
-      obj.s    = Rotorsystem(obj.xi, obj.m0, obj.e);
+      obj.s    = Rotorsystem();
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options

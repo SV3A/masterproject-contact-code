@@ -6,62 +6,62 @@ classdef Rotorsystem < handle
   %        x_ih, x_ih_d, y_ih, y_ih_d, x_mh, x_mh_d, y_mh, y_mh_d]^T
 
   properties (Constant)
-    r_r = 25e-3/2;   % Rotor radius [m]
-    r_s = 29e-3/2;   % Stator radius [m]
+    r_r = 25e-3/2;      % Rotor radius [m]
+    r_s = 29e-3/2;      % Stator radius [m]
 
-    l_OM = 171.7e-3; % Position vector, pivot point to the PMB [m]
-    l_OG = 195.9e-3; % Position vector, pivot point to centre of gravity [m]
-    l_OD = 259.7e-3; % Position vector, pivot point to the disc [m]
-    l_OC = 413.7e-3; % Position vector, pivot point to contact point [m]
+    e_x = 0.027;        % Unbalance parameter [m]
+    e_y = -0.072;       % Unbalance parameter [m]
+    m0  = 1e-3;         % Unbalance parameter [m]
 
-    I_xx = 7.085371 * 1e-2; % Mass moment of inertia component [kg*m^2]
-    I_yy = 7.085371 * 1e-2; % Mass moment of inertia component [kg*m^2]
-    %I_zz = 981365 * 1e-9;      % Mass moment of inertia component [kg*m^2]
-    I_zz = 0.106132 * 1e-2;      % Mass moment of inertia component [kg*m^2]
+    l_OM = 171.7e-3;    % Position vector, pivot point to the PMB [m]
+    l_OG = 195.9e-3;    % Position vector, pivot point to centre of gravity [m]
+    l_OD = 259.7e-3;    % Position vector, pivot point to the disc [m]
+    l_OC = 428.7e-3;    % Position vector, pivot point to contact point [m]
+    l_OE = 72.5e-3;     % Position vector, pivot point to excitation point [m]
 
-    K_mx = 3.09*10^4;  % Stiffness of the magnetic bearing in x [N/m]
-    K_my = 3.09*10^4;  % Stiffness of the magnetic bearing in y [N/m]
+    I_xx = 7.085371e-2; % Mass moment of inertia component [kg*m^2]
+    I_yy = 7.085371e-2; % Mass moment of inertia component [kg*m^2]
+    I_zz = 0.106132e-2; % Mass moment of inertia component [kg*m^2]
 
-    D_x = 40.9;     % Damping coefficient in x [N*s/m]
-    D_y = 7.7;      % Damping coefficient in y [N*s/m]
+    k_xx = 3.09e4;      % Stiffness of the magnetic bearing in x [N/m]
+    k_yy = 3.09e4;      % Stiffness of the magnetic bearing in y [N/m]
+    k_xy = -2.456e3;    % Cross stiffness term [N/m]
+    k_yx = 292;         % Cross stiffness term [N/m]
 
-    l_OIH = 413.7e-3;   % Position vector, pivot point to inner house [m]
-    l_OMH = 413.7e-3;   % Position vector, pivot point to middle [m]
+    d0_xx = 40.9;       % Damping coefficient in x at theta = 0 [N*s/m]
+    d_xx  = 8.48;       % Damping coefficient in x [N*s/m]
+    d_yy  = 7.7;        % Damping coefficient in y [N*s/m]
 
-    m_ih = 1.7;         % Inner house mass [kg]
-    m_mh = 7.17;        % Middle house mass [kg]
+    l_OIH = 428.7e-3; % Position vector, pivot point to inner house [m]
+    l_OMH = 428.7e-3; % Position vector, pivot point to middle [m]
 
-    K_ft = 8.88e7;      % Stiffness of the force transducer [N/m]
+    m_ih = 1.79;      % Inner house mass [kg]
+    m_mh = 8.44;      % Middle house mass [kg]
 
-    K_vg = 1.23e7;      % Stiffness of vertical beams [N/m]
-    K_hg = 2.40e7;      % Stiffness of horizontal beams [N/m]
+    k_ft1 = 8.42e6;   % Stiffness of the force transducer [N/m]
+    k_ft2 = 1.26e7;   % Stiffness of the force transducer [N/m]
 
-    D_vg = 238;         % Damping coefficient of vertical beams [Ns/m]
-    D_hg = 1576;        % Damping coefficient of horizontal beams [Ns/m]
+    k_vg = 9.709e8;   % Stiffness of vertical beams [N/m]
+    k_hg = 1.41e9;    % Stiffness of horizontal beams [N/m]
 
-    x0 = 0;             % Initial housing offset in x [m]
-    y0 = 0;             % Initial housing offset in y [m]
+    d_vg = 2168;      % Damping coefficient of vertical beams [Ns/m]
+    d_hg = 12983;     % Damping coefficient of horizontal beams [Ns/m]
 
   end
 
 
   properties
-    m0  % Unbalance mass
-    e   % Eccentricity
     cl  % Clearance [m]
   end
 
 
   methods
-    function obj = Rotorsystem(xi, m0, e)
+    function obj = Rotorsystem()
       % Constructor function.
       % INPUT:
       %   xi: damping ratio
       %   m0: unbalance mass
       %   e : unbalance eccentricity
-
-      obj.m0 = m0;
-      obj.e  = e;
 
       % Calculate clearance
       obj.cl = obj.r_s - obj.r_r;

@@ -10,8 +10,8 @@ classdef Contactmodels < handle
 
   properties
     mu_k         % Friction coefficient
-    v_0  = 1e-4; % Lower velocity tolerance [m/s]
-    v_1  = 2e-4; % Upper velocity tolerance [m/s]
+    v_0 = 1e-4;  % Lower velocity tolerance [m/s]
+    v_1 = 2e-4;  % Upper velocity tolerance [m/s]
     calc_ff
   end
 
