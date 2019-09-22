@@ -9,9 +9,9 @@ classdef Rotorsystem < handle
     r_r = 25e-3/2;      % Rotor radius [m]
     r_s = 29e-3/2;      % Stator radius [m]
 
-    e_x = 0.027;        % Unbalance parameter [m]
+    e_x =  0.027;       % Unbalance parameter [m]
     e_y = -0.072;       % Unbalance parameter [m]
-    m0  = 1e-3;         % Unbalance parameter [m]
+    m0  = 1e-3;         % Unbalance mass [kg]
 
     l_OM = 171.7e-3;    % Position vector, pivot point to the PMB [m]
     l_OG = 195.9e-3;    % Position vector, pivot point to centre of gravity [m]
@@ -26,26 +26,26 @@ classdef Rotorsystem < handle
     k_xx = 3.09e4;      % Stiffness of the magnetic bearing in x [N/m]
     k_yy = 3.09e4;      % Stiffness of the magnetic bearing in y [N/m]
     k_xy = -2.456e3;    % Cross stiffness term [N/m]
-    k_yx = 292;         % Cross stiffness term [N/m]
+    k_yx = -292;        % Cross stiffness term [N/m]
 
     d0_xx = 40.9;       % Damping coefficient in x at theta = 0 [N*s/m]
     d_xx  = 8.48;       % Damping coefficient in x [N*s/m]
     d_yy  = 7.7;        % Damping coefficient in y [N*s/m]
 
-    l_OIH = 428.7e-3; % Position vector, pivot point to inner house [m]
-    l_OMH = 428.7e-3; % Position vector, pivot point to middle [m]
+    l_OIH = 428.7e-3;   % Position vector, pivot point to inner house [m]
+    l_OMH = 428.7e-3;   % Position vector, pivot point to middle [m]
 
-    m_ih = 1.79;      % Inner house mass [kg]
-    m_mh = 8.44;      % Middle house mass [kg]
+    m_ih = 1.79;        % Inner house mass [kg]
+    m_mh = 8.44;        % Middle house mass [kg]
 
-    k_ft1 = 8.42e6;   % Stiffness of the force transducer [N/m]
-    k_ft2 = 1.26e7;   % Stiffness of the force transducer [N/m]
+    k_ft1 = 8.42e6;     % Stiffness of the force transducer [N/m]
+    k_ft2 = 1.26e7;     % Stiffness of the force transducer [N/m]
 
-    k_vg = 9.709e8;   % Stiffness of vertical beams [N/m]
-    k_hg = 1.41e9;    % Stiffness of horizontal beams [N/m]
+    k_vg = 9.709e8;     % Stiffness of vertical beams [N/m]
+    k_hg = 1.41e9;      % Stiffness of horizontal beams [N/m]
 
-    d_vg = 2168;      % Damping coefficient of vertical beams [Ns/m]
-    d_hg = 12983;     % Damping coefficient of horizontal beams [Ns/m]
+    d_vg = 2168;        % Damping coefficient of vertical beams [Ns/m]
+    d_hg = 12983;       % Damping coefficient of horizontal beams [Ns/m]
 
   end
 
