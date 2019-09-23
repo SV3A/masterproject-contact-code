@@ -52,19 +52,33 @@ classdef Rotorsystem < handle
 
   properties
     cl  % Clearance [m]
+
+    % External magnet
+
+    mag_app_t; % Absolute time, rel. to sim. start, of when to apply the magnet
+    mag_app_angle; % Angle to sync the magnet application with
+    mag_forcedata; % Force data nx2 vector containing time [s] force [N]
+    mag_flag;  % Boolean used to switch on the magnet wrt. angle
   end
 
 
   methods
-    function obj = Rotorsystem()
+    function obj = Rotorsystem(mag_app_t, mag_app_angle, mag_forcedata)
       % Constructor function.
       % INPUT:
-      %   xi: damping ratio
-      %   m0: unbalance mass
-      %   e : unbalance eccentricity
 
       % Calculate clearance
       obj.cl = obj.r_s - obj.r_r;
+
+      % Handle external excitation
+      if nargin > 0
+
+        % Set trigger time and magnet flag
+        obj.mag_flag      = false;
+        obj.mag_app_t     = mag_app_t;
+        obj.mag_app_angle = mag_app_angle;
+        obj.mag_forcedata = mag_forcedata;
+      end
     end
 
 
@@ -206,6 +220,45 @@ classdef Rotorsystem < handle
 
       % Penetration rate, i.e. the magnitude of the radial velocity
       delta_d = norm( v_rel_r )*dir;
+    end
+
+
+    function [F_excx, F_excy] = magnetForce(obj, t, y)
+      % Delivers the force from the external electro magnet.
+
+      % If the time 't' is between the application time and the current time +
+      % the length of the external magnet force data, then check the angle.
+      % When the angle crosses the threashhold switch the magnet on and
+      % interpolate the force from the external data with respect to the 'local'
+      % time, i.e. 't - t_magapply'.
+      if t >= obj.mag_app_t && t < obj.mag_app_t + obj.mag_forcedata(end, 1)
+
+        if ~obj.mag_flag
+          % Calculate the instantanious angle
+          angle = 360 * (abs(y(5))/(2*pi) - floor(abs(y(5))/(2*pi)));
+
+          % Apply magnet when the angle crosses the specified angle
+          if angle > obj.mag_app_angle && angle < obj.mag_app_angle+2 && ...
+             ~obj.mag_flag
+
+            obj.mag_flag = true;
+
+            % Print feedback to console
+            fprintf('Applied the magnet at %.2f˚\n', angle)
+          end
+        end
+
+        % When magnet applied interpolate force
+        if obj.mag_flag
+          F_excx = interp1(obj.mag_forcedata(:, 1), obj.mag_forcedata(:, 2), ...
+                           t - obj.mag_app_t);
+          F_excy = 0;
+          return
+        end
+      end
+      F_excx = 0;
+      F_excy = 0;
+
     end
   end % methods
 end % class

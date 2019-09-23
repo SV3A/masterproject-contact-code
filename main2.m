@@ -12,14 +12,18 @@ sim = Simulator;
 
 sim.fric_mod = 'ambrosio';
 
+% Enable magnet
+load('exc_17hz_315deg.mat', 'exc')
+sim.set_magnet(9.9, 245, exc)
+
 % Initial conditions
-sim.y_0(6) = -16*2*pi;
+sim.y_0(6) = -17*2*pi;
 
 % Solve
 %sim.o15_reltol = 1e-8; % Relative tolerance for the ode15s solver
 %sim.o15_abstol = 1e-8; % Absolute tolerance for the ode15s solver
 
-sim.solve([0 30])
+sim.solve([0 10.05])
 
 % Calculate forces etc.
 sim.postprocess();

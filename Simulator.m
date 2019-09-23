@@ -21,6 +21,13 @@ classdef Simulator < handle
     fric_mod  % Friction model
     clearance % Static clearance between the rotor and stator
 
+    % External excitation magnet
+
+    mag_enabled; % Boolean for knowing if the magnet has been applied
+    mag_app_t; % Absolute time, rel. to sim. start, of when to apply the magnet
+    mag_app_angle; % Angle to sync the magnet application with
+    mag_forcedata; % Force data nx2 vector containing time [s] force [N]
+
     % Derived parameters
 
     r_OC      % Position vector of the rotor centre in the contact plane in I
@@ -52,6 +59,28 @@ classdef Simulator < handle
 
       % Initial condition
       obj.y_0 = zeros(14, 1);
+
+      obj.mag_enabled = false;
+    end
+
+
+    function set_magnet(obj, time, angle, force)
+      % Enables the external excitation magnet and sets its properties.
+      %
+      % INPUT:
+      %   time : the rough point in time when to apply the magnet force
+      %   angle: the angle at which to apply the magnet
+      %   force: a nx2 vector containing the local time and force of the magnet
+
+      if ~obj.mag_enabled
+        obj.mag_app_t     = time;
+        obj.mag_app_angle = angle;
+        obj.mag_forcedata = force;
+
+        obj.mag_enabled   = true;
+      else
+        warning("Magnet already enabled, I'm ignoring this.")
+      end
     end
 
 
@@ -65,7 +94,12 @@ classdef Simulator < handle
       obj.contact_states = 0;
 
       % Initiate system object
-      obj.s    = Rotorsystem();
+      if obj.mag_enabled
+        obj.s  = Rotorsystem(obj.mag_app_t, obj.mag_app_angle, ...
+                             obj.mag_forcedata);
+      else
+        obj.s  = Rotorsystem();
+      end
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options
@@ -104,8 +138,13 @@ classdef Simulator < handle
       obj.event_times    = [];
       obj.contact_states = 0;
 
-      % Initiate system object
-      obj.s    = Rotorsystem();
+      % Initiate system objects
+      if obj.mag_enabled
+        obj.s  = Rotorsystem(obj.mag_app_t, obj.mag_app_angle, ...
+                             obj.mag_forcedata);
+      else
+        obj.s  = Rotorsystem();
+      end
       obj.cmod = Nikravesh(obj.fric_mod, obj.s.r_s, obj.s.r_r);
 
       % Solver options
