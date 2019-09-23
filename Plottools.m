@@ -6,6 +6,7 @@ classdef Plottools < handle
 
     orbit_plt % Orbit plot figure handle
     state_plt % State plot figure handle
+    lat_plt   % Lateral plot figure handle
   end
 
 
@@ -54,6 +55,31 @@ classdef Plottools < handle
            clearance * sin(linspace(0, 2*pi)) * 1e3, 'r', 'LineWidth', 1.5)
       xlabel('Orbit [mm]')
       axis equal
+    end
+
+
+    function lateral(obj, t, rot_x, rot_y)
+      % Plot lateral displacement of the rotor
+
+      % Create figure or overwrite it
+      obj.lat_plt = obj.set_fig(obj.lat_plt);
+
+      % Set figure properties
+      set(obj.lat_plt, 'name', 'Lateral displacements', 'color', 'w', ...
+          'units', 'normalized');
+
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.state_plt, 'outerposition', [0.5 0 0.5 1]);
+      end
+
+      subplot(2, 1, 1)
+      plot(t, rot_x * 1e3, 'b', 'LineWidth', 1.2); grid on
+      ylabel('$x$-displacement [mm]', 'interpreter', 'latex', 'FontSize', 18)
+
+      subplot(2, 1, 2)
+      plot(t, rot_y * 1e3, 'r', 'LineWidth', 1.2); grid on
+      xlabel('Time [s]', 'interpreter', 'latex', 'FontSize', 18)
+      ylabel('$y$-displacement [mm]', 'interpreter', 'latex', 'FontSize', 18)
     end
 
 

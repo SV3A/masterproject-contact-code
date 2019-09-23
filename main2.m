@@ -29,7 +29,12 @@ sim.postprocess();
 % Plot stuff
 pt = Plottools();
 
-pt.orbit(sim.r_OC(1, :), sim.r_OC(2, :), sim.clearance)
+%pt.orbit(sim.r_OD(1, :), sim.r_OD(2, :), sim.clearance)
+
+pt.lateral(sim.time, sim.r_OD(1, :), sim.r_OD(2, :))
+
+pt.orbit(sim.r_OD(1, round((3/8)*end):end), sim.r_OD(2, round((3/8)*end):end), ...
+         sim.clearance)
 
 %pt.states(sim.time, sim.solution(:, 1:2:end), {'\Gamma', '\beta', '\theta', ...
           %'x_{ih}', 'y_{ih}', 'x_{oh}', 'y_{ih}'})
