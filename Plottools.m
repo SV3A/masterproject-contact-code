@@ -50,10 +50,13 @@ classdef Plottools < handle
       % Rotor orbit (converted to [mm])
       plot(rot_x * 1e3, rot_y * 1e3, 'b', 'LineWidth', 1.2); grid on; hold on
 
+      % THIS IS HACK
+      clearance = 0.00121;
+
       % Clearance circle
       plot(clearance * cos(linspace(0, 2*pi)) * 1e3, ...
            clearance * sin(linspace(0, 2*pi)) * 1e3, 'r', 'LineWidth', 1.5)
-      xlabel('Orbit [mm]')
+      xlabel('Orbit [mm]', 'interpreter', 'latex', 'FontSize', 18)
       axis equal
     end
 
