@@ -54,8 +54,13 @@ function y_dot = dydt(t, y, s, cmod, state)
   % Calculate contact forces
   [F_cx, F_cy] = contactForce(y, s, cmod, state);
 
-  % Evaluate external magnet force
-  [F_excx, F_excy] = s.magnetForce(t, y);
+  % Evaluate external magnet force if enabled
+  if s.mag_enabled
+    [F_excx, F_excy] = s.magnetForce(t, y);
+  else
+    F_excx = 0;
+    F_excy = 0;
+  end
 
 
 % Don't edit anything after this as it may be overwritten by Maple!

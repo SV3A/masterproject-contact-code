@@ -23,7 +23,7 @@ classdef Simulator < handle
 
     % External excitation magnet
 
-    mag_enabled; % Boolean for knowing if the magnet has been applied
+    mag_enabled; % Boolean for knowing if the magnet has been enabled
     mag_app_t; % Absolute time, rel. to sim. start, of when to apply the magnet
     mag_app_angle; % Angle to sync the magnet application with
     mag_forcedata; % Force data nx2 vector containing time [s] force [N]
@@ -64,20 +64,34 @@ classdef Simulator < handle
     end
 
 
-    function set_magnet(obj, time, angle, force)
+    function set_magnet(obj, varargin)
       % Enables the external excitation magnet and sets its properties.
       %
       % INPUT:
       %   time : the rough point in time when to apply the magnet force
-      %   angle: the angle at which to apply the magnet
+      %   angle: (optional) the angle at which to apply the magnet
       %   force: a nx2 vector containing the local time and force of the magnet
 
       if ~obj.mag_enabled
-        obj.mag_app_t     = time;
-        obj.mag_app_angle = angle;
-        obj.mag_forcedata = force;
 
-        obj.mag_enabled   = true;
+        % Handle optional arguments (note nargin is +1 due to object)
+        if nargin < 3
+          error('ERROR Not enough inputs supplied')
+        elseif nargin > 3
+          obj.mag_app_angle = varargin{2};
+          obj.mag_forcedata = varargin{3};
+        else
+          obj.mag_app_angle = 0;
+          obj.mag_forcedata = varargin{2};
+        end
+
+        obj.mag_app_t = varargin{1};
+
+        if size(obj.mag_forcedata, 2) ~= 2
+          error('ERROR Magnet force data not a vector of dimension nx2')
+        end
+
+        obj.mag_enabled = true;
       else
         warning("Magnet already enabled, I'm ignoring this.")
       end
