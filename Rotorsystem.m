@@ -5,61 +5,57 @@ classdef Rotorsystem < handle
   %   y = [gamma, gamma_d, beta, beta_d, theta, theta_d,
   %        x_ih, x_ih_d, y_ih, y_ih_d, x_mh, x_mh_d, y_mh, y_mh_d]^T
 
-  properties (Constant)
-    r_r = 25e-3/2;      % Rotor radius [m]
-    r_s = 29e-3/2;      % Stator radius [m]
-
-    e_x =  0.027;       % Unbalance parameter [m]
-    e_y = -0.072;       % Unbalance parameter [m]
-    m0  = 1e-3;         % Unbalance mass [kg]
-
-    l_OM = 171.7e-3;    % Position vector, pivot point to the PMB [m]
-    l_OG = 195.9e-3;    % Position vector, pivot point to centre of gravity [m]
-    l_OD = 259.7e-3;    % Position vector, pivot point to the disc [m]
-    l_OC = 428.7e-3;    % Position vector, pivot point to contact point [m]
-    l_OE = 72.5e-3;     % Position vector, pivot point to excitation point [m]
-
-    I_xx = 7.085371e-2; % Mass moment of inertia component [kg*m^2]
-    I_yy = 7.085371e-2; % Mass moment of inertia component [kg*m^2]
-    I_zz = 0.106132e-2; % Mass moment of inertia component [kg*m^2]
-
-    k_xx = 3.09e4;      % Stiffness of the magnetic bearing in x [N/m]
-    k_yy = 3.09e4;      % Stiffness of the magnetic bearing in y [N/m]
-    k_xy = -2.456e3;    % Cross stiffness term [N/m]
-    k_yx = -292;        % Cross stiffness term [N/m]
-
-    d0_xx = 40.9;       % Damping coefficient in x at theta = 0 [N*s/m]
-    d_xx  = 8.48;       % Damping coefficient in x [N*s/m]
-    d_yy  = 7.7;        % Damping coefficient in y [N*s/m]
-
-    l_OIH = 428.7e-3;   % Position vector, pivot point to inner house [m]
-    l_OMH = 428.7e-3;   % Position vector, pivot point to middle [m]
-
-    m_ih = 1.79;        % Inner house mass [kg]
-    m_mh = 8.44;        % Middle house mass [kg]
-
-    k_ft1 = 8.42e6;     % Stiffness of the force transducer [N/m]
-    k_ft2 = 1.26e7;     % Stiffness of the force transducer [N/m]
-
-    k_vg = 9.709e8;     % Stiffness of vertical beams [N/m]
-    k_hg = 1.41e9;      % Stiffness of horizontal beams [N/m]
-
-    d_vg = 2168;        % Damping coefficient of vertical beams [Ns/m]
-    d_hg = 12983;       % Damping coefficient of horizontal beams [Ns/m]
-
-  end
-
-
   properties
-    cl  % Clearance [m]
+    r_r   % Rotor radius [m]
+    r_s   % Stator radius [m]
+
+    e_x   % Unbalance parameter [m]
+    e_y   % Unbalance parameter [m]
+    m0    % Unbalance mass [kg]
+
+    l_OM  % Position vector, pivot point to the PMB [m]
+    l_OG  % Position vector, pivot point to centre of gravity [m]
+    l_OD  % Position vector, pivot point to the disc [m]
+    l_OC  % Position vector, pivot point to contact point [m]
+    l_OE  % Position vector, pivot point to excitation point [m]
+
+    I_xx  % Mass moment of inertia component [kg*m^2]
+    I_yy  % Mass moment of inertia component [kg*m^2]
+    I_zz  % Mass moment of inertia component [kg*m^2]
+
+    k_xx  % Stiffness of the magnetic bearing in x [N/m]
+    k_yy  % Stiffness of the magnetic bearing in y [N/m]
+    k_xy  % Cross stiffness term [N/m]
+    k_yx  % Cross stiffness term [N/m]
+
+    d0_xx % Damping coefficient in x at theta = 0 [N*s/m]
+    d_xx  % Damping coefficient in x [N*s/m]
+    d_yy  % Damping coefficient in y [N*s/m]
+
+    l_OIH % Position vector, pivot point to inner house [m]
+    l_OMH % Position vector, pivot point to middle [m]
+
+    m_ih  % Inner house mass [kg]
+    m_mh  % Middle house mass [kg]
+
+    k_ft1 % Stiffness of the force transducer [N/m]
+    k_ft2 % Stiffness of the force transducer [N/m]
+
+    k_vg  % Stiffness of vertical beams [N/m]
+    k_hg  % Stiffness of horizontal beams [N/m]
+
+    d_vg  % Damping coefficient of vertical beams [Ns/m]
+    d_hg  % Damping coefficient of horizontal beams [Ns/m]
+
+    cl    % Clearance [m]
 
     % External magnet
 
-    mag_enabled; % Boolean for knowing if the magnet has been enabled
+    mag_enabled;   % Boolean for knowing if the magnet has been enabled
     mag_app_t; % Absolute time, rel. to sim. start, of when to apply the magnet
     mag_app_angle; % Angle to sync the magnet application with
     mag_forcedata; % Force data nx2 vector containing time [s] force [N]
-    mag_flag;  % Boolean used to switch on the magnet wrt. angle
+    mag_flag;      % Boolean used to switch on the magnet wrt. angle
   end
 
 
@@ -67,6 +63,9 @@ classdef Rotorsystem < handle
     function obj = Rotorsystem(mag_app_t, mag_app_angle, mag_forcedata)
       % Constructor function.
       % INPUT:
+
+      % Read the settings file
+      obj.read_settings('settings.toml');
 
       % Calculate clearance
       obj.cl = obj.r_s - obj.r_r;
@@ -271,5 +270,45 @@ classdef Rotorsystem < handle
       F_excy = 0;
 
     end
-  end % methods
+  end % public methods
+
+
+  methods (Access = protected)
+    function read_settings(obj, filepath)
+      % Read the settings file and populate the properties of this class
+
+      d = toml.read(filepath);
+
+      obj.r_r   = d.rotor.radius;
+      obj.r_s   = d.houses.radius;
+      obj.e_x   = d.unbalance.e_x;
+      obj.e_y   = d.unbalance.e_y;
+      obj.m0    = d.unbalance.m0;
+      obj.l_OM  = d.rotor.l_OM;
+      obj.l_OG  = d.rotor.l_OG;
+      obj.l_OD  = d.rotor.l_OD;
+      obj.l_OC  = d.rotor.l_OC;
+      obj.l_OE  = d.rotor.l_OE;
+      obj.I_xx  = d.rotor.I_xx;
+      obj.I_yy  = d.rotor.I_yy;
+      obj.I_zz  = d.rotor.I_zz;
+      obj.k_xx  = d.rotor.k_xx;
+      obj.k_yy  = d.rotor.k_yy;
+      obj.k_xy  = d.rotor.k_xy;
+      obj.k_yx  = d.rotor.k_yx;
+      obj.d0_xx = d.rotor.d0_xx;
+      obj.d_xx  = d.rotor.d_xx;
+      obj.d_yy  = d.rotor.d_yy;
+      obj.l_OIH = d.houses.l_OIH;
+      obj.l_OMH = d.houses.l_OMH;
+      obj.m_ih  = d.houses.m_ih;
+      obj.m_mh  = d.houses.m_mh;
+      obj.k_ft1 = d.houses.k_ft1;
+      obj.k_ft2 = d.houses.k_ft2;
+      obj.k_vg  = d.houses.k_vg;
+      obj.k_hg  = d.houses.k_hg;
+      obj.d_vg  = d.houses.d_vg;
+      obj.d_hg  = d.houses.d_hg;
+    end
+  end % private methods
 end % class
