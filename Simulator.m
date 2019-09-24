@@ -197,7 +197,7 @@ classdef Simulator < handle
 
         % Assign new initial conditions
         loc_tst = t(end);
-        y0 = y(end,:);
+        y0      = y(end,:);
 
         % Print feedback
         fprintf('t_n = %f s\n', obj.time(end));
