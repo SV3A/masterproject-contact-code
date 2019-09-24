@@ -45,7 +45,7 @@ function y_dot = dydt(t, y, s, cmod, state)
   end
 
   % Damping switch to account for anisotropic damping at standstill
-  if abs(y(6)) > 0
+  if abs(y(6)) > 5
     d_xx  = s.d_xx;
   else
     d_xx  = s.d0_xx;
