@@ -39,11 +39,6 @@ function y_dot = dydt(t, y, s, cmod, state)
   d_hg   = s.d_hg;
   d_yy   = s.d_yy;
 
-  if t < 2
-    d_xx = 100;
-    d_yy = 100;
-  end
-
   % Damping switch to account for anisotropic damping at standstill
   if abs(y(6)) > 5
     d_xx  = s.d_xx;
@@ -62,6 +57,24 @@ function y_dot = dydt(t, y, s, cmod, state)
     F_excy = 0;
   end
 
+  % Initial damping to kill initial transients
+  %if t < 1
+    %d_xx = 50;
+    %d_yy = 50;
+  %elseif t >= 1 && t < 2
+    %d_xx = 40;
+    %d_yy = 40;
+  %elseif t >= 2 && t < 3
+    %d_xx = 30;
+    %d_yy = 30;
+  %elseif t >= 3 && t < 4
+    %d_xx = 20;
+    %d_yy = 20;
+  %end
+
+  % Remove cross stiffness
+  %k_xy = 0;
+  %k_yx = 0;
 
 % Don't edit anything after this as it may be overwritten by Maple!
 % * * * * *

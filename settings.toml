@@ -1,5 +1,5 @@
 [rotor]
-radius = 12.5e-3      # Rotor radius [m]
+radius = 12.5e-3   # Rotor radius [m]
 
 I_xx = 7.085371e-2 # Mass moment of inertia component [kg*m^2]
 I_yy = 7.085371e-2 # Mass moment of inertia component [kg*m^2]
@@ -21,7 +21,7 @@ l_OC = 428.7e-3    # Position vector, pivot point to contact point [m]
 l_OE = 72.5e-3     # Position vector, pivot point to excitation point [m]
 
 [houses]
-radius = 14.5e-3      # Stator radius [m]
+radius = 14.5e-3   # Stator radius [m]
 
 m_ih = 1.79        # Inner house mass [kg]
 m_mh = 8.44        # Middle house mass [kg]
