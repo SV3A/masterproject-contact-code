@@ -7,6 +7,11 @@ classdef Plottools < handle
     orbit_plt % Orbit plot figure handle
     state_plt % State plot figure handle
     lat_plt   % Lateral plot figure handle
+    int_plt   % Indentation plot figure handle
+    intf_plt  % Indentation-force plot figure handle
+
+    fontsize_lab = 28;
+    fontsize_ax  = 26;
   end
 
 
@@ -32,7 +37,7 @@ classdef Plottools < handle
     end
 
 
-    function orbit(obj, rot_x, rot_y, clearance)
+    function orbit(obj, rot_x, rot_y, clearance, sup_x, sup_y)
       % Plots the rotor orbit inside the stator boundary (clearance circle).
 
       % Create figure or overwrite it
@@ -50,14 +55,23 @@ classdef Plottools < handle
       % Rotor orbit (converted to [mm])
       plot(rot_x * 1e3, rot_y * 1e3, 'b', 'LineWidth', 1.2); grid on; hold on
 
+      if nargin > 4
+        plot(sup_x * 1e3, sup_y * 1e3, 'k', 'LineWidth', 1.2);
+      end
+
       % THIS IS HACK
-      clearance = 0.00121;
+      %clearance = 0.00121;
+      %clearance = 0.001106;
+      clearance = 0.00114;
 
       % Clearance circle
       plot(clearance * cos(linspace(0, 2*pi)) * 1e3, ...
            clearance * sin(linspace(0, 2*pi)) * 1e3, 'r', 'LineWidth', 1.5)
       xlabel('Orbit [mm]', 'interpreter', 'latex', 'FontSize', 18)
       axis equal
+
+      set(findall(gcf, '-property', 'FontSize'), ...
+          'FontSize', obj.fontsize_ax, 'FontName', 'Times')
     end
 
 
@@ -81,8 +95,91 @@ classdef Plottools < handle
 
       subplot(2, 1, 2)
       plot(t, rot_y * 1e3, 'r', 'LineWidth', 1.2); grid on
-      xlabel('Time [s]', 'interpreter', 'latex', 'FontSize', 18)
-      ylabel('$y$-displacement [mm]', 'interpreter', 'latex', 'FontSize', 18)
+      xlabel('Time [s]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+      ylabel('$y$-displacement [mm]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+
+      set(findall(gcf, '-property', 'FontSize'), ...
+          'FontSize', obj.fontsize_ax, 'FontName', 'Times')
+    end
+
+
+    function indent(obj, time, delta, event_times)
+      % Plot indentation displacement of the rotor
+
+      if isempty(event_times)
+        warning('WARNING No impacts to plot')
+        return
+      end
+
+      % Create figure or overwrite it
+      obj.int_plt = obj.set_fig(obj.int_plt);
+
+      % Set figure properties
+      set(obj.int_plt, 'name', 'Lateral displacements', 'color', 'w', ...
+          'units', 'normalized');
+
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.state_plt, 'outerposition', [0.5 0 0.5 1]);
+      end
+
+      idx = zeros(length(event_times), 1);
+      for i = 1:length(event_times)
+        idx(i) = find(event_times(i) == time);
+      end
+
+      hold on
+
+      for i = 2:2:length(event_times)
+        plot(time(idx(i-1):idx(i)), delta(idx(i-1):idx(i))*1e6); grid on
+      end
+      xlabel('Time [s]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+      ylabel('Indentation [$\mu$m]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+
+      set(findall(gcf, '-property', 'FontSize'), ...
+          'FontSize', obj.fontsize_ax, 'FontName', 'Times')
+    end
+
+
+    function indentf(obj, time, delta, fn, event_times)
+      % Plot lateral displacement of the rotor
+
+      if isempty(event_times)
+        warning('WARNING No impacts to plot')
+        return
+      end
+
+      % Create figure or overwrite it
+      obj.intf_plt = obj.set_fig(obj.intf_plt);
+
+      % Set figure properties
+      set(obj.intf_plt, 'name', 'Lateral displacements', 'color', 'w', ...
+          'units', 'normalized');
+
+      if ~strcmp(get(0, 'DefaultFigureWindowStyle'), 'docked')
+        set(obj.state_plt, 'outerposition', [0.5 0 0.5 1]);
+      end
+
+      idx = zeros(length(event_times), 1);
+      for i = 1:length(event_times)
+        idx(i) = find(event_times(i) == time);
+      end
+
+      hold on
+
+      for i = 2:2:length(event_times)
+        plot(delta(idx(i-1):idx(i))*1e6, fn(idx(i-1):idx(i))); grid on
+      end
+      xlabel('Indentation [$\mu$m]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+      ylabel('Radial force [N]', 'interpreter', 'latex', ...
+             'FontSize', obj.fontsize_lab)
+
+      set(findall(gcf, '-property', 'FontSize'), ...
+          'FontSize', obj.fontsize_ax, 'FontName', 'Times')
     end
 
 
