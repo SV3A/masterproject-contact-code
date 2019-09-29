@@ -260,12 +260,15 @@ classdef Simulator < handle
     function export(obj, export_type)
       % A handle for function to export the solution to a text file.
 
+      % Root of filename
+      fileroot = datestr(now, 'export-ddmm-HHMMss');
+
       % Define parameter list
       if strcmp(export_type, 'basic')
         par_list = {'t', 'rotor_x', 'rotor_y',  'stator_x', 'stator_y', ...
                     'theta', 'Fn', 'delta'};
 
-        value_vector = [obj.time'; obj.r_OC(1, :); obj.r_OC(2, :); ...
+        value_vector = [obj.time'; obj.r_OD(1, :); obj.r_OD(2, :); ...
                         obj.s_OC(1, :); obj.s_OC(2, :); obj.solution(:, 5)'; ...
                         obj.fn'; obj.d'];
 
@@ -274,12 +277,19 @@ classdef Simulator < handle
                     %'theta', 'Fn', 'delta', 'x', 'y', 'z'};
 
         %value_vector = [value_vector; x; y; z;];
+      elseif strcmp(export_type, 'mat')
+        value_vector = [obj.time'; obj.r_OD(1, :); obj.r_OD(2, :); ...
+                        obj.s_OC(1, :); obj.s_OC(2, :); obj.solution(:, 5)'; ...
+                        obj.fn'; obj.d'];
+
+        save([fileroot, '.mat'], 'value_vector')
+        return
       else
-        fclose(fileID); error('Unknown export type.')
+        error('ERROR Unknown export type.')
       end
 
       % Call external function
-      export_values(par_list, value_vector)
+      export_values(par_list, value_vector, [fileroot, '.txt'])
     end
 
   end % methods
