@@ -12,3 +12,8 @@ The specific rotor dynamics are implemented via the equations of motion in `dydt
 ### Usage
 - An example of a program is given in `sim1.m`
 - System parameters are set in `settings.toml`
+
+--------------------------------------------------
+### Simulation Example
+Below a result obtained from the code is seen:
+![trajectory simulation](doc/animation.gif)
